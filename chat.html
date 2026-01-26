@@ -13,59 +13,57 @@
             background: radial-gradient(circle, #1a0a2a 0%, #050505 100%);
             overflow: hidden;
         }
-        
         #terminal {
-            display: flex; width: 98%; max-width: 1400px; height: 92vh;
+            display: flex; width: 95%; height: 90vh;
             background: rgba(10, 5, 15, 0.98); border: 1px solid #d4af3733;
             box-shadow: 0 0 50px rgba(114, 9, 183, 0.3); border-radius: 12px; overflow: hidden;
         }
-
         #side-panel {
-            width: 300px; border-right: 1px solid #2a1a3a;
+            width: 280px; border-right: 1px solid #2a1a3a;
             display: flex; flex-direction: column; align-items: center;
-            padding: 30px 20px; background: rgba(15, 10, 25, 0.5); gap: 20px;
+            padding: 30px 15px; background: rgba(15, 10, 25, 0.5); gap: 15px;
         }
+        .rune { font-size: 35px; color: #d4af37; text-shadow: 0 0 15px #d4af37; animation: blink 4s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .rune { font-size: 50px; color: #d4af37; text-shadow: 0 0 20px #d4af37; margin-bottom: 10px; }
-        
         .avatar-circle {
-            width: 110px; height: 110px; border: 3px solid #d4af37; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 50px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); color: #d4af37; text-transform: uppercase;
+            width: 100px; height: 100px; border: 2px solid #d4af37; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 45px;
+            color: #d4af37; text-transform: uppercase; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
         }
+        #display-nick { font-size: 20px; letter-spacing: 2px; color: #d4af37; text-transform: uppercase; }
+        #lvl-display { font-size: 12px; color: #8a7fb9; letter-spacing: 3px; }
 
-        #display-nick { font-size: 24px; letter-spacing: 3px; font-weight: bold; color: #d4af37; text-transform: uppercase; }
-
-        .back-btn {
-            margin-top: auto; width: 100%; background: none; border: 1px solid #d4af37;
-            color: #d4af37; padding: 15px; cursor: pointer; font-size: 14px; 
-            text-transform: uppercase; font-weight: bold; transition: 0.3s;
+        .side-btn {
+            width: 100%; background: none; border: 1px solid #2a1a3a;
+            color: #8a7fb9; padding: 10px; cursor: pointer; font-size: 10px; text-transform: uppercase; transition: 0.3s;
         }
-        .back-btn:hover { background: #d4af37; color: #000; }
+        .side-btn.active { background: #3c096c; color: #d4af37; border-color: #d4af37; }
+        
+        .back-btn { margin-top: auto; border: 1px solid #d4af37 !important; color: #d4af37 !important; }
 
         #chat-area { flex-grow: 1; display: flex; flex-direction: column; background: #000; }
-        #log { flex-grow: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 20px; }
+        #chat-header { padding: 15px 25px; border-bottom: 1px solid #2a1a3a; display: flex; justify-content: space-between; font-size: 12px; }
         
-        .entry { 
-            background: rgba(40, 10, 60, 0.4); padding: 15px 20px; 
-            border-left: 4px solid #d4af37; align-self: flex-start; 
-            border-radius: 6px; max-width: 85%; font-size: 18px; line-height: 1.5;
+        .online-wrapper { position: relative; cursor: help; }
+        .presence-list {
+            position: absolute; top: 25px; right: 0; background: #1a0a2a;
+            border: 1px solid #d4af37; padding: 10px; border-radius: 4px;
+            display: none; min-width: 150px; z-index: 100;
         }
-        .entry.mine { align-self: flex-end; border-left: none; border-right: 4px solid #8a7fb9; background: rgba(60, 9, 108, 0.3); }
-        .entry b { color: #9d4edd; font-size: 14px; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .online-wrapper:hover .presence-list { display: block; }
 
-        #input-zone { padding: 25px; border-top: 1px solid #2a1a3a; background: #050505; }
-        .input-row { display: flex; gap: 15px; }
+        #log { flex-grow: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+        .entry { background: rgba(40, 10, 60, 0.3); padding: 12px 18px; border-left: 3px solid #d4af37; align-self: flex-start; border-radius: 4px; max-width: 80%; }
+        .entry.mine { align-self: flex-end; border-left: none; border-right: 3px solid #8a7fb9; background: rgba(60, 9, 108, 0.25); }
+        .entry b { display: block; font-size: 11px; color: #9d4edd; margin-bottom: 5px; text-transform: uppercase; }
         
-        input[type="text"] { 
-            background: #000; border: 1px solid #2a1a3a; color: #d4af37; 
-            padding: 15px; flex-grow: 1; outline: none; font-size: 18px; border-radius: 4px;
-        }
-        
-        .send-btn { 
-            background: #d4af37; color: #000; border: none; padding: 0 35px; 
-            cursor: pointer; font-weight: bold; font-size: 16px; border-radius: 4px;
-        }
+        .shadow-text { font-family: 'Courier New', monospace; color: #d4af37; opacity: 0.8; }
+
+        #input-zone { padding: 20px; border-top: 1px solid #2a1a3a; background: #050505; }
+        .input-row { display: flex; gap: 10px; }
+        input[type="text"]#user-msg { background: #000; border: 1px solid #2a1a3a; color: #d4af37; padding: 15px; flex-grow: 1; font-size: 18px; outline: none; }
+        .send-btn { background: #d4af37; color: #000; border: none; padding: 0 30px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -73,15 +71,22 @@
     <div id="side-panel">
         <div class="rune">ᛟ</div>
         <div class="avatar-circle" id="dynamic-avatar">?</div>
-        <div id="display-nick">...</div>
-        
-        <input type="text" id="change-nick" placeholder="Сменить имя" 
-               style="font-size: 12px; padding: 5px; width: 100%; text-align: center; margin-top: 10px;"
-               onchange="saveNewNick(this.value)">
-
-        <button class="back-btn" onclick="location.href='index.html'">ВЕРНУТЬСЯ В МЕНЮ</button>
+        <div style="text-align: center;">
+            <div id="display-nick">...</div>
+            <div id="lvl-display">Level 0</div>
+        </div>
+        <button class="side-btn" id="shadow-toggle" onclick="toggleShadow()">Теневой режим: ВЫКЛ</button>
+        <input type="text" id="change-nick" placeholder="Сменить имя" style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:5px; font-size:10px; text-align:center;" onchange="saveNewNick(this.value)">
+        <button class="side-btn back-btn" onclick="location.href='index.html'">ВЕРНУТЬСЯ В МЕНЮ</button>
     </div>
     <div id="chat-area">
+        <div id="chat-header">
+            <span>СВИТОК ШЕПОТА</span>
+            <div class="online-wrapper">
+                <span id="online-count" style="color:#00ffcc;">● ЗАГРУЗКА...</span>
+                <div id="presence-list" class="presence-list"></div>
+            </div>
+        </div>
         <div id="log"></div>
         <div id="input-zone">
             <div class="input-row">
@@ -92,42 +97,75 @@
     </div>
 </div>
 <script>
-    // Берем ник из памяти или ставим гостя по умолчанию
     let myName = localStorage.getItem('arcanum_nick') || "Странник";
-    
+    let myExp = parseInt(localStorage.getItem('arcanum_exp')) || 0;
+    let isShadowMode = false;
+    const runesSet = "ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚻᚼᚽᚾᚿᛁᛃᛄᛅᛆᛇᛈᛉᛊᛋᛌᛍᛎᛏᛐᛑᛒᛓᛔᛕᛖᛗᛘᛙᛚᛛᛜᛜ";
+
     const ably = new Ably.Realtime({ key: 'FO1MkA.QBgrTg:OjC-PQMR4Coi4nxjLyFe84T8uKnxzl0lFkFfDPyfDYg', clientId: myName });
     const channel = ably.channels.get('arcanum_stream');
+
+    function toggleShadow() {
+        isShadowMode = !isShadowMode;
+        document.getElementById('shadow-toggle').innerText = isShadowMode ? "Теневой режим: ВКЛ" : "Теневой режим: ВЫКЛ";
+        document.getElementById('shadow-toggle').classList.toggle('active');
+        document.getElementById('log').innerHTML = '';
+        loadHistory();
+    }
+
+    function toRunes(text) { return text.split('').map(() => runesSet[Math.floor(Math.random() * runesSet.length)]).join(''); }
 
     function updateProfile() {
         document.getElementById('dynamic-avatar').innerText = myName.charAt(0);
         document.getElementById('display-nick').innerText = myName;
+        document.getElementById('lvl-display').innerText = "Level " + Math.floor(myExp / 10);
         document.getElementById('change-nick').value = myName;
     }
 
-    function saveNewNick(newVal) {
-        if (newVal.trim()) {
-            localStorage.setItem('arcanum_nick', newVal.trim());
-            location.reload(); // Перезагрузка, чтобы обновить имя везде
-        }
+    function saveNewNick(v) { if(v.trim()){ localStorage.setItem('arcanum_nick', v.trim()); location.reload(); } }
+
+    function loadHistory() {
+        channel.history({ limit: 25 }, (err, page) => {
+            if (!err) page.items.reverse().forEach(m => addMsg(m.data.u, m.data.t));
+        });
     }
 
-    channel.subscribe('post', (m) => {
+    channel.subscribe('post', (m) => addMsg(m.data.u, m.data.t));
+    channel.presence.subscribe('enter', updatePresence);
+    channel.presence.subscribe('leave', updatePresence);
+    channel.presence.enter();
+
+    function updatePresence() {
+        channel.presence.get((err, members) => {
+            if (!err) {
+                document.getElementById('online-count').innerText = `● В СЕТИ: ${members.length}`;
+                const list = document.getElementById('presence-list');
+                list.innerHTML = "<b>Маги:</b><hr>";
+                members.forEach(m => { list.innerHTML += `<div>${m.clientId}</div>`; });
+            }
+        });
+    }
+
+    function addMsg(user, text) {
         const log = document.getElementById('log');
-        const isMine = m.data.u === myName ? 'mine' : '';
-        log.innerHTML += `<div class="entry ${isMine}"><b>${m.data.u}</b>${m.data.t}</div>`;
+        const isMine = user === myName ? 'mine' : '';
+        let content = isShadowMode ? `<span class="shadow-text">${toRunes(text)}</span>` : text;
+        log.innerHTML += `<div class="entry ${isMine}"><b>${user}</b>${content}</div>`;
         log.scrollTop = log.scrollHeight;
-    });
+    }
 
     function send() {
         const inp = document.getElementById('user-msg');
         if (inp.value.trim()) { 
             channel.publish('post', { u: myName, t: inp.value }); 
-            inp.value = ''; 
+            inp.value = '';
+            myExp += 1; localStorage.setItem('arcanum_exp', myExp); updateProfile();
         }
     }
-    
+
     document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
     updateProfile();
+    loadHistory();
 </script>
 </body>
 </html>
