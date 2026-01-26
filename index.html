@@ -3,71 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCANUM — Эфир</title>
+    <title>ARCANUM — Связь</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         * { box-sizing: border-box; }
-        body { background: #080808; color: #d4af37; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        body { background: #0a0a0a; color: #d4af37; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
         
-        #app { width: 100%; max-width: 480px; display: flex; flex-direction: column; border: 1px solid #1a1a1a; background: #000; box-shadow: 0 0 50px rgba(0, 217, 255, 0.05); }
+        #app { width: 100%; max-width: 500px; display: flex; flex-direction: column; border: 1px solid #1a1a1a; background: #000; }
         
-        #header { padding: 15px; text-align: center; border-bottom: 1px solid #d4af37; background: #050505; }
-        #header h1 { margin: 0; font-size: 18px; letter-spacing: 6px; text-transform: uppercase; color: #d4af37; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+        #header { padding: 12px; text-align: center; border-bottom: 2px solid #d4af37; background: #050505; }
+        #header h1 { margin: 0; font-size: 18px; letter-spacing: 5px; color: #d4af37; }
         
-        #status-bar { padding: 8px; font-size: 10px; color: #00d9ff; text-align: center; border-bottom: 1px solid #111; background: #0a0a0a; text-transform: uppercase; letter-spacing: 1px; }
+        #status-bar { padding: 6px; font-size: 10px; color: #00d9ff; text-align: center; border-bottom: 1px solid #111; background: #080808; text-transform: uppercase; }
         
-        #log { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+        #log { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
         
-        .entry { background: rgba(255, 255, 255, 0.02); border: 1px solid #1a1a1a; padding: 10px 14px; border-radius: 4px; border-left: 3px solid #00d9ff; }
-        .entry b { font-size: 10px; color: #00d9ff; text-transform: uppercase; display: block; margin-bottom: 4px; opacity: 0.8; }
-        .entry p { margin: 0; font-size: 15px; color: #e0e0e0; line-height: 1.4; }
+        /* Блоки сообщений */
+        .entry { background: #0f0f0f; border: 1px solid #222; padding: 10px; border-radius: 5px; border-left: 3px solid #00d9ff; }
+        .entry b { font-size: 10px; color: #00d9ff; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .entry p { margin: 0; font-size: 14px; color: #fff; line-height: 1.5; }
         
-        #input-panel { padding: 15px; background: #050505; border-top: 1px solid #1a1a1a; display: flex; flex-direction: column; gap: 10px; }
+        #input-panel { padding: 15px; background: #050505; border-top: 1px solid #1a1a1a; }
         
-        .row { display: flex; gap: 8px; }
-        .label { font-size: 10px; color: #444; margin-bottom: 4px; display: block; text-transform: uppercase; }
+        .row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        .hint { font-size: 9px; color: #444; text-transform: uppercase; margin-bottom: 3px; display: block; }
         
-        input { background: #000; border: 1px solid #222; color: #00d9ff; padding: 10px; flex-grow: 1; outline: none; border-radius: 2px; transition: 0.3s; }
-        input:focus { border-color: #00d9ff; box-shadow: 0 0 10px rgba(0, 217, 255, 0.1); }
+        input { background: #000; border: 1px solid #333; color: #00d9ff; padding: 10px; flex-grow: 1; outline: none; border-radius: 3px; }
+        input:focus { border-color: #00d9ff; }
         
-        button { background: #00d9ff; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border-radius: 2px; transition: 0.3s; }
-        button:hover { background: #fff; box-shadow: 0 0 15px #00d9ff; }
+        /* Кнопки на русском */
+        button { background: #00d9ff; color: #000; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; font-size: 11px; border-radius: 3px; min-width: 80px; }
+        button:hover { background: #fff; }
         
-        .msg-btn { background: #d4af37; }
-        .msg-btn:hover { background: #fff; box-shadow: 0 0 15px #d4af37; }
+        .send-btn { background: #d4af37; }
+        .send-btn:hover { background: #fff; }
 
-        /* Полоса прокрутки */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 10px; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: #333; }
     </style>
 </head>
 <body>
 
 <div id="app">
     <div id="header"><h1>ARCANUM</h1></div>
-    <div id="status-bar">В СЕТИ: <span id="online-count">СКАНИРОВАНИЕ...</span></div>
+    <div id="status-bar">В СЕТИ: <span id="online-count">ПОИСК...</span></div>
     <div id="log"></div>
     <div id="input-panel">
-        <div>
-            <span class="label">Ваш позывной:</span>
-            <div class="row">
-                <input type="text" id="user-nick" placeholder="Введите имя...">
-                <button onclick="saveNick()">ОК</button>
-            </div>
+        <span class="hint">Ваш позывной:</span>
+        <div class="row">
+            <input type="text" id="user-nick" placeholder="Имя...">
+            <button onclick="saveNick()">ГОТОВО</button>
         </div>
-        <div>
-            <span class="label">Ваше послание:</span>
-            <div class="row">
-                <input type="text" id="user-msg" placeholder="Текст сообщения..." autocomplete="off">
-                <button class="msg-btn" onclick="send()">ИЗРЕЧЬ</button>
-            </div>
+        <span class="hint">Сообщение:</span>
+        <div class="row">
+            <input type="text" id="user-msg" placeholder="Введите текст..." autocomplete="off">
+            <button class="send-btn" onclick="send()">ИЗРЕЧЬ</button>
         </div>
     </div>
 </div>
 
 <script>
-    let myName = localStorage.getItem('arcanum_nick') || "ГОСТЬ_" + Math.floor(Math.random() * 999);
+    let myName = localStorage.getItem('arcanum_nick') || "ГОСТЬ_" + Math.floor(Math.random() * 99);
     document.getElementById('user-nick').value = myName;
 
     const ably = new Ably.Realtime({
@@ -110,6 +106,5 @@
 
     document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
 </script>
-
 </body>
 </html>
