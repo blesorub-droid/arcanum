@@ -3,221 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCANUM — Portal to Between Worlds</title>
-    <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+    <title>ARCANUM — Выбери свой мир</title>
     <style>
         * { box-sizing: border-box; }
         body { 
-            background: #050505; color: #d4af37; font-family: 'Georgia', serif; margin: 0; 
-            display: flex; align-items: center; justify-content: center; min-height: 100vh;
-            background: radial-gradient(circle, #1a0a2a 0%, #050505 100%);
-            overflow: hidden; transition: 1.5s filter, 1.5s opacity;
+            background: #020205; color: #d4af37; font-family: 'Georgia', serif; margin: 0; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            min-height: 100vh; overflow-x: hidden;
+            background: radial-gradient(circle at center, #1a0a2a 0%, #020205 100%);
+            transition: 1.5s filter, 1.5s opacity;
         }
-        #terminal {
-            display: flex; width: 95%; max-width: 1200px; height: 85vh;
-            background: rgba(10, 5, 15, 0.98); border: 1px solid #d4af3733;
-            box-shadow: 0 0 50px rgba(114, 9, 183, 0.3); border-radius: 8px;
-            overflow: hidden;
-        }
+        #header { text-align: center; margin-bottom: 30px; }
+        .rune-master { font-size: 70px; text-shadow: 0 0 30px #d4af37; display: block; }
+        .brand-title { font-size: 28px; letter-spacing: 15px; font-weight: bold; text-transform: uppercase; }
+        .choose-text { font-size: 18px; letter-spacing: 8px; color: #8a7fb9; text-transform: uppercase; margin-top: 10px; }
 
-        #side-panel {
-            width: 280px; border-right: 1px solid #2a1a3a;
-            display: flex; flex-direction: column; align-items: center;
-            padding: 40px 20px; background: rgba(15, 10, 25, 0.5); gap: 15px;
-        }
-        .logo-area { text-align: center; width: 100%; }
-        .rune { font-size: 35px; color: #d4af37; text-shadow: 0 0 15px #d4af37; animation: blink 4s infinite; display: block; }
-        .brand { font-size: 16px; letter-spacing: 5px; font-weight: bold; display: block; text-transform: uppercase; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        .avatar-circle {
-            width: 90px; height: 90px; border: 2px solid #d4af37; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 40px; color: #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-            text-transform: uppercase;
-        }
+        .worlds-container { display: flex; gap: 30px; padding: 20px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1200px; }
         
-        .side-btn {
-            width: 100%; background: none; border: 1px solid #2a1a3a;
-            color: #8a7fb9; padding: 10px; cursor: pointer; 
-            text-transform: uppercase; font-size: 10px; transition: 0.3s;
+        .world-sphere {
+            width: 350px; min-height: 500px; background: rgba(10, 10, 25, 0.9);
+            border: 1px solid rgba(212, 175, 55, 0.1); border-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; padding: 40px 30px;
+            cursor: pointer; transition: 0.4s; text-decoration: none;
         }
-        .side-btn.active { background: #3c096c; color: #d4af37; border-color: #d4af37; }
 
-        /* ТА САМАЯ КНОПКА ПОРТАЛА */
-        .portal-btn {
-            margin-top: auto; 
-            border: 1px solid #00ffcc !important; 
-            color: #00ffcc !important;
-            font-weight: bold;
-            letter-spacing: 3px;
-            text-shadow: 0 0 8px #00ffcc;
-            background: rgba(0, 255, 204, 0.05) !important;
-            animation: crystal-glow 4s infinite ease-in-out;
-            cursor: pointer;
-        }
-        @keyframes crystal-glow {
-            0%, 100% { box-shadow: inset 0 0 10px rgba(0,255,204,0.1), 0 0 5px rgba(0,255,204,0.2); opacity: 0.8; }
-            50% { box-shadow: inset 0 0 25px rgba(0,255,204,0.2), 0 0 20px rgba(0,255,204,0.4); opacity: 1; transform: scale(1.02); }
-        }
-        .portal-btn:hover { background: #00ffcc !important; color: #000 !important; box-shadow: 0 0 30px #00ffcc; }
+        .magic { border-top: 6px solid #d4af37; color: #d4af37; }
+        .magic:hover { box-shadow: 0 0 60px rgba(212, 175, 55, 0.4); transform: scale(1.05); }
 
-        #chat-area { flex-grow: 1; display: flex; flex-direction: column; background: #000; position: relative; }
-        #chat-header { padding: 15px 20px; border-bottom: 1px solid #2a1a3a; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+        .heaven { border-top: 6px solid #00d9ff; color: #00d9ff; }
+        .heaven:hover { box-shadow: 0 0 60px rgba(0, 217, 255, 0.4); transform: scale(1.05); }
 
-        #log { flex-grow: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
-        .entry {
-            background: rgba(40, 10, 60, 0.3); padding: 12px 18px;
-            border-left: 3px solid #d4af37; max-width: 450px; align-self: flex-start;
-            border-radius: 4px; transition: 0.2s;
-        }
-        .entry.mine { align-self: flex-end; border-left: none; border-right: 3px solid #8a7fb9; background: rgba(60, 9, 108, 0.25); }
-        .entry b { display: block; font-size: 11px; color: #9d4edd; margin-bottom: 5px; text-transform: uppercase; }
-        
-        .shadow-text { font-family: 'Courier New', monospace; color: #d4af37; opacity: 0.8; transition: 0.1s; }
-        .entry:hover .shadow-text { opacity: 1; font-family: 'Georgia', serif; }
+        .void { border-top: 6px solid #9d4edd; color: #9d4edd; }
+        .void:hover { box-shadow: 0 0 60px rgba(157, 78, 221, 0.5); transform: scale(1.05); }
 
-        .online-wrapper { position: relative; cursor: help; }
-        .presence-list {
-            position: absolute; top: 25px; right: 0; background: #1a0a2a;
-            border: 1px solid #d4af37; padding: 10px; border-radius: 4px;
-            display: none; min-width: 150px; z-index: 100;
-        }
-        .online-wrapper:hover .presence-list { display: block; }
-
-        #input-zone { padding: 20px; border-top: 1px solid #2a1a3a; background: #050505; }
-        .input-row { display: flex; gap: 10px; }
-        input[type="text"]#user-msg { background: #000; border: 1px solid #2a1a3a; color: #d4af37; padding: 12px; flex-grow: 1; outline: none; }
-        .send-btn { background: #d4af37; color: #000; border: none; padding: 0 25px; font-weight: bold; cursor: pointer; }
-
-        @media (max-width: 800px) {
-            #terminal { flex-direction: column; height: 100vh; width: 100%; border: none; }
-            #side-panel { width: 100%; height: auto; padding: 10px; flex-direction: row; border-right: none; }
-            .logo-area, .side-btn, #lvl-display { display: none; }
-            .avatar-circle { width: 45px; height: 45px; font-size: 18px; margin: 0; }
-        }
+        .world-icon { font-size: 90px; margin-bottom: 30px; }
+        .world-name { font-size: 32px; letter-spacing: 4px; margin-bottom: 25px; text-transform: uppercase; font-weight: bold; text-align: center; }
+        .world-desc { font-size: 16px; line-height: 1.8; text-align: center; font-style: italic; color: #fff; }
+        .status { margin-top: auto; font-size: 12px; letter-spacing: 4px; opacity: 0.8; text-transform: uppercase; }
     </style>
 </head>
 <body>
-<div id="terminal">
-    <div id="side-panel">
-        <div class="logo-area"><span class="rune">ᛟ</span><span class="brand">ARCANUM</span></div>
-        <div class="avatar-circle" id="dynamic-avatar">?</div>
-        <div style="text-align: center;">
-            <div id="display-nick" style="font-size: 18px; letter-spacing: 2px;">ZHEKOSS</div>
-            <div id="lvl-display" style="font-size: 10px; color: #8a7fb9;">Level 0</div>
-        </div>
-        <button class="side-btn" id="shadow-toggle" onclick="toggleShadow()">Теневой режим: ВЫКЛ</button>
-        <button class="side-btn">Книга контактов</button>
-        <input type="text" id="user-nick" style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:5px; font-size:10px; text-align:center;" onchange="saveNick()">
-        
-        <button class="side-btn portal-btn" onclick="goToBetweenWorlds()">МЕЖДУМИРЬЕ</button>
+    <div id="header">
+        <span class="rune-master">ᛟ</span>
+        <div class="brand-title">ARCANUM</div>
+        <div class="choose-text">ВЫБЕРИ СВОЙ МИР</div>
     </div>
-    <div id="chat-area">
-        <div id="chat-header">
-            <span>СВИТОК ШЕПОТА: КАНАЛ ДУШ</span>
-            <div class="online-wrapper">
-                <span id="online-count" style="color:#00ffcc; font-weight:bold;">● ЗАГРУЗКА...</span>
-                <div id="presence-list" class="presence-list"></div>
-            </div>
+
+    <div class="worlds-container">
+        <a href="chat.html" class="world-sphere magic">
+            <div class="world-icon">ᛟ</div>
+            <div class="world-name">Арканум</div>
+            <div class="world-desc">Центральная обитель магии. Место, где древние руны сплетаются в цифровой код.</div>
+            <div class="status">● ВХОД В ЧАТ</div>
+        </a>
+
+        <div class="world-sphere heaven" onclick="alert('Небесный Мир еще не проявил свою форму...')">
+            <div class="world-icon">🕊️</div>
+            <div class="world-name">Небесный Мир</div>
+            <div class="world-desc">Высший план чистого эфира. Обитель божественных звуков, покоя и света.</div>
+            <div class="status" style="color:#00d9ff">○ ПОИСК РЕЗОНАНСА</div>
         </div>
-        <div id="log"></div>
-        <div id="input-zone">
-            <div class="input-row">
-                <input type="text" id="user-msg" placeholder="Изречь мысли..." autocomplete="off">
-                <button class="send-btn" onclick="send()">ИЗРЕЧЬ</button>
-            </div>
+
+        <div class="world-sphere void" onclick="goToGalacticus()">
+            <div class="world-icon">🛰️</div>
+            <div class="world-name">Бездна</div>
+            <div class="world-desc">Бескрайний техногенный космос. Холод звезд, вечное движение и пустота.</div>
+            <div class="status" style="color:#9d4edd">● ПЕРЕХОД ДОСТУПЕН</div>
         </div>
     </div>
-</div>
 
-<script>
-    let myName = localStorage.getItem('arcanum_nick') || "ZHEKOSS";
-    let myExp = parseInt(localStorage.getItem('arcanum_exp')) || 0;
-    let isShadowMode = false;
-    const runesSet = "ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚻᚼᚽᚾᚿᛁᛃᛄᛅᛆᛇᛈᛉᛊᛋᛌᛍᛎᛏᛐᛑᛒᛓᛔᛕᛖᛗᛘᛙᛚᛛᛜᛝᛞᛟ";
-
-    const ably = new Ably.Realtime({ key: 'FO1MkA.QBgrTg:OjC-PQMR4Coi4nxjLyFe84T8uKnxzl0lFkFfDPyfDYg', clientId: myName });
-    const channel = ably.channels.get('arcanum_stream');
-
-    function toggleShadow() {
-        isShadowMode = !isShadowMode;
-        document.getElementById('shadow-toggle').innerText = isShadowMode ? "Теневой режим: ВКЛ" : "Теневой режим: ВЫКЛ";
-        document.getElementById('shadow-toggle').classList.toggle('active');
-        document.getElementById('log').innerHTML = '';
-        loadHistory();
-    }
-
-    function toRunes(text) { return text.split('').map(() => runesSet[Math.floor(Math.random() * runesSet.length)]).join(''); }
-
-    function updateProfile() {
-        document.getElementById('lvl-display').innerText = "Level " + Math.floor(myExp / 10);
-        document.getElementById('dynamic-avatar').innerText = myName.charAt(0).toUpperCase();
-        document.getElementById('display-nick').innerText = myName;
-        document.getElementById('user-nick').value = myName;
-    }
-
-    function loadHistory() {
-        channel.history({ limit: 25 }, (err, page) => {
-            if (!err) page.items.reverse().forEach(m => { if(m.data.u) addMsg(m.data.u, m.data.t, m.timestamp); });
-        });
-    }
-
-    channel.subscribe('post', (m) => addMsg(m.data.u, m.data.t, m.timestamp));
-    channel.presence.subscribe('enter', updatePresence);
-    channel.presence.subscribe('leave', updatePresence);
-    channel.presence.enter();
-
-    function updatePresence() {
-        channel.presence.get((err, members) => {
-            if (!err) {
-                document.getElementById('online-count').innerText = `● В ЭФИРЕ: ${members.length} ДУШ`;
-                const list = document.getElementById('presence-list');
-                list.innerHTML = "<b>Маги в сети:</b><hr style='border:0; border-top:1px solid #2a1a3a; margin:5px 0;'>";
-                members.forEach(m => { list.innerHTML += `<div>${m.clientId}</div>`; });
-            }
-        });
-    }
-
-    function addMsg(user, text, ts) {
-        const log = document.getElementById('log');
-        const isMine = user === myName ? 'mine' : '';
-        const time = new Date(ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        let content = isShadowMode ? `<span class="shadow-text" data-text="${text}">${toRunes(text)}</span>` : text;
-        log.innerHTML += `<div class="entry ${isMine}" onmouseenter="reveal(this)" onmouseleave="conceal(this)">
-            <b>${user} <small style="color:#444; float:right;">${time}</small></b>
-            <p class="msg-body">${content}</p>
-        </div>`;
-        log.scrollTop = log.scrollHeight;
-    }
-
-    function reveal(el) { if (isShadowMode) { const s = el.querySelector('.shadow-text'); if(s) s.innerText = s.getAttribute('data-text'); } }
-    function conceal(el) { if (isShadowMode) { const s = el.querySelector('.shadow-text'); if(s) s.innerText = toRunes(s.getAttribute('data-text')); } }
-
-    function send() {
-        const inp = document.getElementById('user-msg');
-        if (inp.value.trim()) { 
-            channel.publish('post', { u: myName, t: inp.value }); 
-            inp.value = '';
-            myExp += 1; localStorage.setItem('arcanum_exp', myExp); updateProfile();
+    <script>
+        function goToGalacticus() {
+            document.body.style.filter = "blur(30px) brightness(0)";
+            document.body.style.opacity = "0";
+            setTimeout(() => {
+                window.location.href = "https://fantastic-dolphin-fd8e6c.netlify.app/"; 
+            }, 1500);
         }
-    }
-
-    function saveNick() {
-        const n = document.getElementById('user-nick').value.trim();
-        if (n) { localStorage.setItem('arcanum_nick', n); location.reload(); }
-    }
-
-    /* ФУНКЦИЯ ПЕРЕХОДА */
-    function goToBetweenWorlds() {
-        document.body.style.filter = "blur(20px)";
-        document.body.style.opacity = "0";
-        setTimeout(() => { window.location.href = "menu.html"; }, 1500);
-    }
-    
-    updateProfile();
-    loadHistory();
-    document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
-</script>
+    </script>
 </body>
 </html>
