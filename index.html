@@ -3,45 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCANUM - Core</title>
+    <title>ARCANUM — Эфир</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         * { box-sizing: border-box; }
-        body { background: #000; color: #d4af37; font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; height: 100vh; }
-        #app { width: 100%; max-width: 500px; display: flex; flex-direction: column; border-left: 1px solid #222; border-right: 1px solid #222; }
-        #status-bar { padding: 10px; font-size: 11px; border-bottom: 1px solid #d4af37; text-align: center; letter-spacing: 2px; background: #050505; }
-        #log { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .entry { border-left: 2px solid #333; padding-left: 10px; margin-bottom: 5px; }
-        .entry b { font-size: 10px; display: block; color: #888; text-transform: uppercase; }
-        .entry p { margin: 3px 0; font-size: 14px; color: #eee; }
-        #input-panel { padding: 15px; background: #050505; border-top: 1px solid #222; }
-        .row { display: flex; gap: 10px; margin-bottom: 10px; }
-        input { background: #000; border: 1px solid #333; color: #d4af37; padding: 10px; flex-grow: 1; outline: none; }
-        input:focus { border-color: #d4af37; }
-        button { background: #d4af37; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #fff; }
-        .online-mark { color: #0f0; margin-right: 5px; }
+        body { background: #080808; color: #d4af37; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        
+        #app { width: 100%; max-width: 480px; display: flex; flex-direction: column; border: 1px solid #1a1a1a; background: #000; box-shadow: 0 0 50px rgba(0, 217, 255, 0.05); }
+        
+        #header { padding: 15px; text-align: center; border-bottom: 1px solid #d4af37; background: #050505; }
+        #header h1 { margin: 0; font-size: 18px; letter-spacing: 6px; text-transform: uppercase; color: #d4af37; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+        
+        #status-bar { padding: 8px; font-size: 10px; color: #00d9ff; text-align: center; border-bottom: 1px solid #111; background: #0a0a0a; text-transform: uppercase; letter-spacing: 1px; }
+        
+        #log { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+        
+        .entry { background: rgba(255, 255, 255, 0.02); border: 1px solid #1a1a1a; padding: 10px 14px; border-radius: 4px; border-left: 3px solid #00d9ff; }
+        .entry b { font-size: 10px; color: #00d9ff; text-transform: uppercase; display: block; margin-bottom: 4px; opacity: 0.8; }
+        .entry p { margin: 0; font-size: 15px; color: #e0e0e0; line-height: 1.4; }
+        
+        #input-panel { padding: 15px; background: #050505; border-top: 1px solid #1a1a1a; display: flex; flex-direction: column; gap: 10px; }
+        
+        .row { display: flex; gap: 8px; }
+        .label { font-size: 10px; color: #444; margin-bottom: 4px; display: block; text-transform: uppercase; }
+        
+        input { background: #000; border: 1px solid #222; color: #00d9ff; padding: 10px; flex-grow: 1; outline: none; border-radius: 2px; transition: 0.3s; }
+        input:focus { border-color: #00d9ff; box-shadow: 0 0 10px rgba(0, 217, 255, 0.1); }
+        
+        button { background: #00d9ff; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; border-radius: 2px; transition: 0.3s; }
+        button:hover { background: #fff; box-shadow: 0 0 15px #00d9ff; }
+        
+        .msg-btn { background: #d4af37; }
+        .msg-btn:hover { background: #fff; box-shadow: 0 0 15px #d4af37; }
+
+        /* Полоса прокрутки */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <div id="status-bar">ARCANUM // <span id="online-count">СКАНИРОВАНИЕ...</span></div>
+    <div id="header"><h1>ARCANUM</h1></div>
+    <div id="status-bar">В СЕТИ: <span id="online-count">СКАНИРОВАНИЕ...</span></div>
     <div id="log"></div>
     <div id="input-panel">
-        <div class="row">
-            <input type="text" id="user-nick" placeholder="ВАШ ПОЗЫВНОЙ">
-            <button onclick="saveNick()">SET</button>
+        <div>
+            <span class="label">Ваш позывной:</span>
+            <div class="row">
+                <input type="text" id="user-nick" placeholder="Введите имя...">
+                <button onclick="saveNick()">ОК</button>
+            </div>
         </div>
-        <div class="row">
-            <input type="text" id="user-msg" placeholder="СООБЩЕНИЕ..." autocomplete="off">
-            <button onclick="send()">SEND</button>
+        <div>
+            <span class="label">Ваше послание:</span>
+            <div class="row">
+                <input type="text" id="user-msg" placeholder="Текст сообщения..." autocomplete="off">
+                <button class="msg-btn" onclick="send()">ИЗРЕЧЬ</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    let myName = localStorage.getItem('arcanum_nick') || "GUEST_" + Math.floor(Math.random() * 999);
+    let myName = localStorage.getItem('arcanum_nick') || "ГОСТЬ_" + Math.floor(Math.random() * 999);
     document.getElementById('user-nick').value = myName;
 
     const ably = new Ably.Realtime({
@@ -51,18 +77,16 @@
 
     const channel = ably.channels.get('arcanum_stream');
 
-    // Мониторинг присутствия (кто в сети)
     channel.presence.subscribe(() => {
         channel.presence.get((err, members) => {
             if (!err) {
                 document.getElementById('online-count').innerHTML = 
-                    'ONLINE: ' + members.map(m => `<span style="color:#fff">${m.clientId}</span>`).join(' • ');
+                    members.map(m => `<span style="color:#d4af37">${m.clientId}</span>`).join(' • ');
             }
         });
     });
     channel.presence.enter();
 
-    // Поток сообщений
     channel.subscribe('post', (m) => {
         const log = document.getElementById('log');
         log.innerHTML += `<div class="entry"><b>${m.data.u}</b><p>${m.data.t}</p></div>`;
