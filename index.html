@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCANUM — Золотой Эфир</title>
+    <title>ARCANUM — Live</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         * { box-sizing: border-box; }
@@ -11,10 +11,12 @@
         #app { width: 100%; max-width: 500px; display: flex; flex-direction: column; border: 1px solid #1a1a1a; background: #000; box-shadow: 0 0 40px rgba(212, 175, 55, 0.1); }
         #header { padding: 15px; text-align: center; border-bottom: 2px solid #d4af37; background: #080808; }
         #header h1 { margin: 0; font-size: 20px; letter-spacing: 7px; color: #d4af37; text-shadow: 0 0 12px rgba(212, 175, 55, 0.5); }
-        #status-bar { padding: 8px; font-size: 10px; color: #00d9ff; text-align: center; border-bottom: 1px solid #111; background: #0a0a0a; text-transform: uppercase; }
+        #status-bar { padding: 8px; font-size: 10px; color: #00d9ff; text-align: center; border-bottom: 1px solid #111; background: #0a0a0a; text-transform: uppercase; min-height: 30px; }
+        #typing-indicator { color: #fff; font-style: italic; margin-left: 10px; opacity: 0.7; }
         #log { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
-        .entry { background: rgba(20, 20, 20, 0.8); border: 1px solid #d4af37; padding: 12px; border-radius: 8px; box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.1); }
+        .entry { background: rgba(20, 20, 20, 0.8); border: 1px solid #d4af37; padding: 12px; border-radius: 8px; }
         .entry b { font-size: 11px; color: #00d9ff; text-transform: uppercase; display: block; margin-bottom: 6px; letter-spacing: 1px; }
+        .time-label { color: #555; font-size: 9px; margin-left: 5px; font-weight: normal; }
         .entry p { margin: 0; font-size: 18px; color: #d4af37; font-weight: bold; line-height: 1.4; }
         #input-panel { padding: 15px; background: #080808; border-top: 1px solid #1a1a1a; }
         .row { display: flex; gap: 10px; margin-bottom: 10px; }
@@ -33,13 +35,16 @@
 
 <div id="app">
     <div id="header"><h1>ARCANUM</h1></div>
-    <div id="status-bar">В СЕТИ: <span id="online-count">СКАНИРОВАНИЕ...</span></div>
+    <div id="status-bar">
+        <span id="online-list">ЭФИР...</span>
+        <span id="typing-indicator"></span>
+    </div>
     <div id="log"></div>
     <div id="input-panel">
-        <span class="hint">Ваш позывной:</span>
+        <span class="hint">Позывной:</span>
         <div class="row">
             <input type="text" id="user-nick" placeholder="Имя...">
-            <button onclick="saveNick()">ГОТОВО</button>
+            <button onclick="saveNick()">ОК</button>
         </div>
         <span class="hint">Сообщение:</span>
         <div class="row">
@@ -60,41 +65,58 @@
 
     const channel = ably.channels.get('arcanum_stream');
 
-    // ЗАГРУЗКА ИСТОРИИ (ПАМЯТЬ)
+    // Загрузка истории
     channel.history((err, resultPage) => {
         if (!err) {
             const historyMessages = resultPage.items.reverse(); 
             historyMessages.forEach(m => {
-                addMessageToLog(m.data.u, m.data.t);
+                const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                addMessageToLog(m.data.u, m.data.t, time);
             });
         }
     });
 
+    // Мониторинг присутствия и статуса печати
     channel.presence.subscribe(() => {
         channel.presence.get((err, members) => {
             if (!err) {
-                document.getElementById('online-count').innerHTML = 
-                    members.map(m => `<span style="color:#d4af37">${m.clientId}</span>`).join(' • ');
+                const typing = members.filter(m => m.data === 'typing').map(m => m.clientId);
+                document.getElementById('online-list').innerHTML = 
+                    'В СЕТИ: ' + members.map(m => `<span style="color:#d4af37">${m.clientId}</span>`).join(' • ');
+                document.getElementById('typing-indicator').innerText = 
+                    typing.length > 0 ? ' ...печатает ' + typing.join(', ') : '';
             }
         });
     });
     channel.presence.enter();
 
-    channel.subscribe('post', (m) => {
-        addMessageToLog(m.data.u, m.data.t);
+    // Отслеживание ввода текста
+    const msgInput = document.getElementById('user-msg');
+    let isTyping = false;
+    msgInput.addEventListener('input', () => {
+        if (!isTyping) {
+            isTyping = true;
+            channel.presence.update('typing');
+            setTimeout(() => { isTyping = false; channel.presence.update(''); }, 3000);
+        }
     });
 
-    function addMessageToLog(user, text) {
+    channel.subscribe('post', (m) => {
+        const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        addMessageToLog(m.data.u, m.data.t, time);
+    });
+
+    function addMessageToLog(user, text, time) {
         const log = document.getElementById('log');
-        log.innerHTML += `<div class="entry"><b>${user}</b><p>${text}</p></div>`;
+        log.innerHTML += `<div class="entry"><b>${user} <span class="time-label">[${time}]</span></b><p>${text}</p></div>`;
         log.scrollTop = log.scrollHeight;
     }
 
     function send() {
-        const i = document.getElementById('user-msg');
-        if (!i.value.trim()) return;
-        channel.publish('post', { u: myName, t: i.value });
-        i.value = '';
+        if (!msgInput.value.trim()) return;
+        channel.publish('post', { u: myName, t: msgInput.value });
+        msgInput.value = '';
+        channel.presence.update(''); 
     }
 
     function saveNick() {
@@ -105,7 +127,7 @@
         }
     }
 
-    document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
+    msgInput.onkeypress = (e) => { if(e.keyCode == 13) send(); };
 </script>
 </body>
 </html>
