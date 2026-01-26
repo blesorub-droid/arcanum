@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCANUM — Чат Душ</title>
+    <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            background: #050505; color: #d4af37; font-family: 'Georgia', serif; margin: 0; 
+            display: flex; align-items: center; justify-content: center; min-height: 100vh;
+            background: radial-gradient(circle, #1a0a2a 0%, #050505 100%);
+            overflow: hidden; transition: 1s filter;
+        }
+        #terminal {
+            display: flex; width: 95%; max-width: 1200px; height: 85vh;
+            background: rgba(10, 5, 15, 0.98); border: 1px solid #d4af3733;
+            box-shadow: 0 0 50px rgba(114, 9, 183, 0.3); border-radius: 8px; overflow: hidden;
+        }
+        #side-panel {
+            width: 280px; border-right: 1px solid #2a1a3a;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 40px 20px; background: rgba(15, 10, 25, 0.5); gap: 15px;
+        }
+        .rune { font-size: 35px; color: #d4af37; text-shadow: 0 0 15px #d4af37; display: block; text-align: center;}
+        .avatar-circle {
+            width: 90px; height: 90px; border: 2px solid #d4af37; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 40px;
+        }
+        .side-btn {
+            width: 100%; background: none; border: 1px solid #2a1a3a;
+            color: #8a7fb9; padding: 10px; cursor: pointer; font-size: 10px; text-transform: uppercase;
+        }
+        .back-btn {
+            margin-top: auto; border: 1px solid #d4af37 !important; color: #d4af37 !important;
+        }
+        #chat-area { flex-grow: 1; display: flex; flex-direction: column; background: #000; }
+        #log { flex-grow: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+        .entry { background: rgba(40, 10, 60, 0.3); padding: 12px 18px; border-left: 3px solid #d4af37; align-self: flex-start; border-radius: 4px; max-width: 80%; }
+        .entry.mine { align-self: flex-end; border-left: none; border-right: 3px solid #8a7fb9; }
+        #input-zone { padding: 20px; border-top: 1px solid #2a1a3a; }
+        .input-row { display: flex; gap: 10px; }
+        input[type="text"] { background: #000; border: 1px solid #2a1a3a; color: #d4af37; padding: 12px; flex-grow: 1; outline: none; }
+        .send-btn { background: #d4af37; color: #000; border: none; padding: 0 25px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div id="terminal">
+    <div id="side-panel">
+        <span class="rune">ᛟ</span>
+        <div class="avatar-circle" id="dynamic-avatar">?</div>
+        <div id="display-nick" style="font-size: 18px;">ZHEKOSS</div>
+        <button class="side-btn back-btn" onclick="location.href='index.html'">ВЕРНУТЬСЯ В МЕНЮ</button>
+    </div>
+    <div id="chat-area">
+        <div id="log"></div>
+        <div id="input-zone">
+            <div class="input-row">
+                <input type="text" id="user-msg" placeholder="Изречь мысли..." autocomplete="off">
+                <button class="send-btn" onclick="send()">ИЗРЕЧЬ</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let myName = localStorage.getItem('arcanum_nick') || "ZHEKOSS";
+    const ably = new Ably.Realtime({ key: 'FO1MkA.QBgrTg:OjC-PQMR4Coi4nxjLyFe84T8uKnxzl0lFkFfDPyfDYg', clientId: myName });
+    const channel = ably.channels.get('arcanum_stream');
+
+    function updateProfile() {
+        document.getElementById('dynamic-avatar').innerText = myName.charAt(0).toUpperCase();
+        document.getElementById('display-nick').innerText = myName;
+    }
+
+    channel.subscribe('post', (m) => {
+        const log = document.getElementById('log');
+        const isMine = m.data.u === myName ? 'mine' : '';
+        log.innerHTML += `<div class="entry ${isMine}"><b>${m.data.u}</b><br>${m.data.t}</div>`;
+        log.scrollTop = log.scrollHeight;
+    });
+
+    function send() {
+        const inp = document.getElementById('user-msg');
+        if (inp.value.trim()) { channel.publish('post', { u: myName, t: inp.value }); inp.value = ''; }
+    }
+    document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
+    updateProfile();
+</script>
+</body>
+</html>
