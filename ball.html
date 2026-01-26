@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCANUM — Сфера Судьбы</title>
+    <style>
+        body {
+            background: #050505; color: #d4af37; font-family: 'Georgia', serif;
+            margin: 0; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; min-height: 100vh; overflow: hidden;
+            background: radial-gradient(circle, #1a0a2a 0%, #050505 100%);
+        }
+
+        .container { text-align: center; }
+
+        /* САМ ШАР */
+        .magic-ball {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle at 30% 30%, #3c096c, #000);
+            border-radius: 50%; border: 2px solid #d4af3733;
+            box-shadow: 0 0 80px rgba(157, 78, 221, 0.4), inset -20px -20px 50px #000;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; transition: 0.3s;
+            margin-bottom: 40px;
+        }
+
+        .magic-ball:active { transform: scale(0.95); }
+
+        /* ВНУТРЕННЕЕ ОКНО ПРЕДСКАЗАНИЯ */
+        .answer-area {
+            width: 180px; height: 180px;
+            background: rgba(0, 0, 0, 0.8); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid #d4af3722; box-shadow: inset 0 0 20px #9d4edd66;
+            padding: 20px; text-align: center;
+        }
+
+        #prediction {
+            font-size: 18px; letter-spacing: 2px; text-transform: uppercase;
+            color: #d4af37; text-shadow: 0 0 10px #d4af37;
+            opacity: 0; transition: opacity 1s;
+        }
+
+        /* АНИМАЦИЯ ТРЯСКИ */
+        .shake { animation: shakeAnim 0.5s ease-in-out infinite; }
+        @keyframes shakeAnim {
+            0% { transform: translate(0,0); }
+            25% { transform: translate(5px, 5px) rotate(2deg); }
+            50% { transform: translate(-5px, -5px) rotate(-2deg); }
+            75% { transform: translate(5px, -5px) rotate(1deg); }
+            100% { transform: translate(0,0); }
+        }
+
+        .title { font-size: 28px; letter-spacing: 5px; margin-bottom: 10px; text-transform: uppercase; }
+        .subtitle { color: #8a7fb9; font-size: 14px; margin-bottom: 30px; letter-spacing: 2px; }
+
+        .back-btn {
+            background: none; border: 1px solid #d4af37; color: #d4af37;
+            padding: 15px 40px; cursor: pointer; text-transform: uppercase;
+            font-weight: bold; transition: 0.3s; letter-spacing: 2px;
+        }
+        .back-btn:hover { background: #d4af37; color: #000; box-shadow: 0 0 20px #d4af37; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="title">СФЕРА СУДЬБЫ</div>
+        <div class="subtitle">КОСНИСЬ, ЧТОБЫ УЗНАТЬ ГРЯДУЩЕЕ</div>
+
+        <div class="magic-ball" id="ball" onclick="askOracle()">
+            <div class="answer-area">
+                <div id="prediction">...</div>
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="location.href='chat.html'">ВЕРНУТЬСЯ В ЧАТ</button>
+    </div>
+
+<script>
+    const answers = [
+        "Духи говорят: ДА",
+        "Путь скрыт туманом",
+        "Звезды против этого",
+        "Час еще не пробил",
+        "Безусловно",
+        "Даже не думай",
+        "Спроси позже",
+        "Знаки сулят удачу",
+        "Твоя воля решит всё",
+        "Вижу великий риск",
+        "Свет укажет путь",
+        "Тень падет на это"
+    ];
+
+    function askOracle() {
+        const ball = document.getElementById('ball');
+        const text = document.getElementById('prediction');
+        
+        // Начинаем тряску
+        ball.classList.add('shake');
+        text.style.opacity = "0";
+
+        setTimeout(() => {
+            // Останавливаем тряску и показываем ответ
+            ball.classList.remove('shake');
+            const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
+            text.innerText = randomAnswer;
+            text.style.opacity = "1";
+        }, 1000); // 1 секунда тряски
+    }
+</script>
+</body>
+</html>
