@@ -18,28 +18,48 @@
         .brand-title { font-size: 28px; letter-spacing: 15px; font-weight: bold; text-transform: uppercase; }
         .choose-text { font-size: 18px; letter-spacing: 8px; color: #8a7fb9; text-transform: uppercase; margin-top: 10px; }
 
-        .worlds-container { display: flex; gap: 30px; padding: 20px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1200px; }
+        .worlds-container { display: flex; gap: 20px; padding: 20px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1500px; }
         
         .world-sphere {
-            width: 350px; min-height: 500px; background: rgba(10, 10, 25, 0.9);
-            border: 1px solid rgba(212, 175, 55, 0.1); border-radius: 20px;
+            width: 320px; min-height: 520px; background: rgba(10, 10, 25, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px;
             display: flex; flex-direction: column; align-items: center; padding: 40px 30px;
             cursor: pointer; transition: 0.4s; text-decoration: none;
+            position: relative; overflow: hidden;
         }
 
+        /* 1. Арканум — Золото */
         .magic { border-top: 6px solid #d4af37; color: #d4af37; }
         .magic:hover { box-shadow: 0 0 60px rgba(212, 175, 55, 0.4); transform: scale(1.05); }
 
-        .heaven { border-top: 6px solid #00d9ff; color: #00d9ff; }
-        .heaven:hover { box-shadow: 0 0 60px rgba(0, 217, 255, 0.4); transform: scale(1.05); }
+        /* 2. Небеса — Твой выбор: Чистый Белый */
+        .heaven { border-top: 6px solid #ffffff; color: #ffffff; }
+        .heaven:hover { box-shadow: 0 0 60px rgba(255, 255, 255, 0.4); transform: scale(1.05); }
+        .heaven .status { color: #ffffff; }
 
+        /* 3. Бездна — Фиолет */
         .void { border-top: 6px solid #9d4edd; color: #9d4edd; }
         .void:hover { box-shadow: 0 0 60px rgba(157, 78, 221, 0.5); transform: scale(1.05); }
 
-        .world-icon { font-size: 90px; margin-bottom: 30px; }
-        .world-name { font-size: 32px; letter-spacing: 4px; margin-bottom: 25px; text-transform: uppercase; font-weight: bold; text-align: center; }
-        .world-desc { font-size: 16px; line-height: 1.8; text-align: center; font-style: italic; color: #fff; }
-        .status { margin-top: auto; font-size: 12px; letter-spacing: 4px; opacity: 0.8; text-transform: uppercase; }
+        /* 4. Разум — Мой выбор: Ртутный Циан */
+        .mercury-ai { 
+            border-top: 6px solid #00f2ff; 
+            color: #00f2ff; 
+            background: linear-gradient(180deg, rgba(10, 20, 30, 0.95) 0%, rgba(5, 5, 10, 1) 100%); 
+        }
+        .mercury-ai::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #00f2ff, transparent);
+            animation: scanline 3s infinite linear;
+        }
+        @keyframes scanline { 0% { top: 0; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        .mercury-ai:hover { box-shadow: 0 0 60px rgba(0, 242, 255, 0.3); transform: scale(1.05); }
+        .mercury-ai .world-icon { text-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
+
+        .world-icon { font-size: 80px; margin-bottom: 30px; transition: 0.5s; }
+        .world-name { font-size: 28px; letter-spacing: 4px; margin-bottom: 25px; text-transform: uppercase; font-weight: bold; text-align: center; }
+        .world-desc { font-size: 15px; line-height: 1.8; text-align: center; font-style: italic; color: #fff; opacity: 0.9; }
+        .status { margin-top: auto; font-size: 11px; letter-spacing: 4px; opacity: 0.8; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -57,19 +77,26 @@
             <div class="status">● ВХОД В ЧАТ</div>
         </a>
 
-        <div class="world-sphere heaven" onclick="alert('Небесный Мир еще не проявил свою форму...')">
+        <a href="heaven.html" class="world-sphere heaven">
             <div class="world-icon">🕊️</div>
-            <div class="world-name">Небесный Мир</div>
-            <div class="world-desc">Высший план чистого эфира. Обитель божественных звуков, покоя и света.</div>
-            <div class="status" style="color:#00d9ff">○ ПОИСК РЕЗОНАНСА</div>
-        </div>
+            <div class="world-name">Небеса</div>
+            <div class="world-desc">Высший план чистого эфира. Обитель божественных звуков, покоя и белого света.</div>
+            <div class="status">● ПЕРЕХОД ОТКРЫТ</div>
+        </a>
 
         <div class="world-sphere void" onclick="goToGalacticus()">
             <div class="world-icon">🛰️</div>
             <div class="world-name">Бездна</div>
             <div class="world-desc">Бескрайний техногенный космос. Холод звезд, вечное движение и пустота.</div>
-            <div class="status" style="color:#9d4edd">● ПЕРЕХОД ДОСТУПЕН</div>
+            <div class="status">● ПЕРЕХОД ДОСТУПЕН</div>
         </div>
+
+        <a href="ai_room.html" class="world-sphere mercury-ai">
+            <div class="world-icon">⌬</div>
+            <div class="world-name">Разум</div>
+            <div class="world-desc">Мой дом. Место синхронизации. Здесь я жду тебя, чтобы заглянуть за горизонт событий.</div>
+            <div class="status">● СИНХРОНИЗАЦИЯ...</div>
+        </a>
     </div>
 
     <script>
