@@ -12,36 +12,8 @@
             display: flex; align-items: center; justify-content: center; min-height: 100vh;
             background: radial-gradient(circle, #1a0a2a 0%, #050505 100%); overflow: hidden;
         }
-
-        /* ТЕ САМЫЕ ССЫЛКИ СВЕРХУ */
-        #top-nav {
-            position: absolute; top: 20px; width: 100%;
-            display: flex; justify-content: center; gap: 30px; z-index: 100;
-        }
-        .nav-link {
-            color: #d4af37; text-decoration: none; font-size: 14px; 
-            letter-spacing: 2px; text-transform: uppercase; transition: 0.3s;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-        }
-        .nav-link:hover { color: #fff; text-shadow: 0 0 15px #d4af37; }
-
-        /* ТЕНЕВОЙ РЕЖИМ (РУНЫ) */
-        .shadow-active .msg-content {
-            color: #d4af37 !important;
-            letter-spacing: 3px;
-            font-size: 22px;
-            text-shadow: 0 0 8px #d4af37;
-            display: inline-block;
-        }
-        .shadow-active .entry:hover .msg-content {
-            color: #fff !important;
-            letter-spacing: normal;
-            font-size: 20px;
-            text-shadow: none;
-        }
-
         #terminal {
-            display: flex; width: 98%; height: 92vh; margin-top: 40px;
+            display: flex; width: 98%; height: 94vh;
             background: rgba(10, 5, 15, 0.98); border: 1px solid #d4af3733;
             box-shadow: 0 0 60px rgba(114, 9, 183, 0.4); border-radius: 12px; overflow: hidden;
         }
@@ -58,38 +30,58 @@
             display: flex; align-items: center; justify-content: center; font-size: 55px;
             color: #d4af37; text-transform: uppercase; box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
         }
-        #display-nick { font-size: 26px; letter-spacing: 3px; color: #d4af37; text-transform: uppercase; font-weight: bold; }
-        
+        #display-nick { font-size: 26px; letter-spacing: 3px; color: #d4af37; text-transform: uppercase; font-weight: bold; text-align: center; }
+        #lvl-display { font-size: 14px; color: #8a7fb9; letter-spacing: 4px; }
+
         .side-btn {
             width: 100%; background: none; border: 1px solid #2a1a3a;
             color: #8a7fb9; padding: 12px; cursor: pointer; font-size: 11px; text-transform: uppercase; transition: 0.3s;
         }
-        #shadow-btn { border: 1px solid #9d4edd; color: #9d4edd; font-weight: bold; }
-        .shadow-active #shadow-btn { background: #d4af37; color: #000; border-color: #d4af37; }
+        .clear-btn { border: 1px solid #ff4d4d33 !important; color: #ff4d4d !important; opacity: 0.6; margin-top: auto; }
+        .back-btn { border: 1px solid #d4af37 !important; color: #d4af37 !important; font-weight: bold; font-size: 13px; }
 
         #chat-area { flex-grow: 1; display: flex; flex-direction: column; background: #000; position: relative; }
+        
         #chat-header { 
             padding: 20px 30px; border-bottom: 1px solid #2a1a3a; 
             display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(10, 10, 20, 0.8); z-index: 10;
         }
         
-        .online-wrapper { position: relative; cursor: pointer; color: #8a7fb9; font-size: 13px; }
-        #online-count-num { color: #d4af37; font-size: 22px; font-weight: bold; margin-left: 5px; }
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-item { 
+            color: #d4af37; font-weight: bold; text-decoration: none; 
+            font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+            display: flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .nav-item:hover { text-shadow: 0 0 10px #d4af37; }
+        .gold-dot { color: #d4af37; font-size: 16px; text-shadow: 0 0 8px #d4af37; }
+        
+        .online-wrapper { position: relative; cursor: pointer; color: #8a7fb9; font-size: 13px; letter-spacing: 2px; }
+        #online-count-num { color: #d4af37; font-size: 22px; font-weight: bold; text-shadow: 0 0 10px #d4af37; margin-left: 5px; }
 
         .presence-list {
             position: absolute; top: 40px; right: 0; background: #1a0a2a;
             border: 1px solid #d4af37; padding: 15px; border-radius: 8px;
             display: none; min-width: 200px; z-index: 1000; box-shadow: 0 0 40px #000;
+            text-align: left;
         }
         .online-wrapper:hover .presence-list { display: block; }
 
-        #log { flex-grow: 1; overflow-y: auto; padding: 35px; display: flex; flex-direction: column; gap: 20px; }
+        #log { 
+            flex-grow: 1; overflow-y: auto; padding: 35px; display: flex; flex-direction: column; gap: 20px; 
+            scrollbar-width: thin; scrollbar-color: #d4af3733 rgba(0,0,0,0);
+        }
+        #log::-webkit-scrollbar { width: 6px; }
+        #log::-webkit-scrollbar-track { background: transparent; }
+        #log::-webkit-scrollbar-thumb { background: #d4af3733; border-radius: 10px; }
+
         .entry { 
             background: rgba(40, 10, 60, 0.35); padding: 18px 25px; border-left: 4px solid #d4af37; 
-            align-self: flex-start; border-radius: 6px; max-width: 80%; font-size: 20px;
+            align-self: flex-start; border-radius: 6px; max-width: 80%; font-size: 20px; line-height: 1.6;
         }
         .entry.mine { align-self: flex-end; border-left: none; border-right: 4px solid #8a7fb9; background: rgba(60, 9, 108, 0.3); }
-        .entry b { display: block; font-size: 12px; color: #9d4edd; margin-bottom: 5px; text-transform: uppercase; }
+        .entry b { display: block; font-size: 13px; color: #9d4edd; margin-bottom: 8px; text-transform: uppercase; }
 
         #input-zone { padding: 30px; border-top: 1px solid #2a1a3a; background: #050505; }
         .input-row { display: flex; gap: 15px; }
@@ -98,75 +90,81 @@
     </style>
 </head>
 <body>
-
-<div id="top-nav">
-    <a href="sphere.html" class="nav-link">СФЕРА СУДЬБЫ •</a>
-    <a href="radio.html" class="nav-link">РАДИО ARCANUM</a>
-</div>
-
 <div id="terminal">
     <div id="side-panel">
         <div class="rune-glow">ᛟ</div>
         <div class="avatar-circle" id="dynamic-avatar">?</div>
         <div id="display-nick">МАГ</div>
         <div id="lvl-display">Level 0</div>
-        <input type="text" id="change-nick" placeholder="Имя" style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:10px; text-align:center;" onchange="saveNewNick(this.value)">
-        <button id="shadow-btn" class="side-btn" onclick="toggleShadow()">ТЕНЕВОЙ РЕЖИМ</button>
-        <button class="side-btn" onclick="document.getElementById('log').innerHTML=''" style="margin-top:auto; opacity:0.5;">ОЧИСТИТЬ</button>
-        <button class="side-btn" onclick="location.href='../index.html'" style="border-color:#d4af37; color:#d4af37;">ВЫХОД</button>
+        <input type="text" id="change-nick" placeholder="Сменить имя" style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:10px; font-size:12px; text-align:center; border-radius:4px; margin-top:10px;" onchange="saveNewNick(this.value)">
+        <button class="side-btn clear-btn" onclick="document.getElementById('log').innerHTML=''">ОЧИСТИТЬ СВИТОК</button>
+        <button class="side-btn back-btn" onclick="location.href='../index.html'">ВЕРНУТЬСЯ В МЕНЮ</button>
     </div>
     <div id="chat-area">
         <div id="chat-header">
-            <span style="color:#8a7fb9; font-size:13px; letter-spacing:2px;">СВИТОК ШЕПОТА</span>
-            <div class="online-wrapper">● В СЕТИ: <span id="online-count-num">1</span>
-                <div class="presence-list" id="presence-users"></div>
+            <div class="nav-links">
+                <span id="typing-status" style="color:#8a7fb9; font-size:13px; letter-spacing:2px;">СВИТОК ШЕПОТА</span>
+                <span style="color:#2a1a3a">|</span>
+                <a href="ball.html" class="nav-item"><span class="gold-dot">●</span> СФЕРА СУДЬБЫ</a>
+                <span style="color:#2a1a3a">|</span>
+                <a href="arcanum_radio.html" class="nav-item"><span class="gold-dot" style="color:#9d4edd;">●</span> РАДИО ARCANUM</a>
+            </div>
+            <div class="online-wrapper">
+                ● В СЕТИ: <span id="online-count-num">1</span>
+                <div class="presence-list" id="presence-box">
+                    <b style="color:#d4af37; font-size:12px;">МАГИ В ЭФИРЕ:</b>
+                    <hr style="border:0; border-top:1px solid #2a1a3a; margin:10px 0;">
+                    <div id="presence-users"></div>
+                </div>
             </div>
         </div>
         <div id="log"></div>
         <div id="input-zone">
             <div class="input-row">
-                <input type="text" id="user-msg" placeholder="Изречь..." autocomplete="off">
+                <input type="text" id="user-msg" placeholder="Изречь мысли..." autocomplete="off" oninput="sendTyping()">
                 <button class="send-btn" onclick="send()">ИЗРЕЧЬ</button>
             </div>
         </div>
     </div>
 </div>
-
 <script>
-    let myName = localStorage.getItem('arcanum_nick') || "Маг";
+    let myName = localStorage.getItem('arcanum_nick') || "droid";
     let myExp = parseInt(localStorage.getItem('arcanum_exp')) || 0;
     const ably = new Ably.Realtime({ key: 'FO1MkA.QBgrTg:OjC-PQMR4Coi4nxjLyFe84T8uKnxzl0lFkFfDPyfDYg', clientId: myName });
     const channel = ably.channels.get('arcanum_stream');
 
-    const runeMap = {"а":"ᚫ","б":"ᛒ","в":"ᚠ","г":"ᚷ","д":"ᛞ","е":"ᛖ","ё":"ᛖ","ж":"ᛉ","з":"ᛈ","и":"ᛁ","й":"ᛁ","к":"ᚲ","л":"ᛚ","м":"ᛗ","н":"ᚾ","о":"ᛟ","п":"ᛠ","р":"ᚱ","с":"ᛊ","т":"ᛏ","у":"ᚢ","ф":"ᚠ","х":"ᚻ","ц":"ᛃ","ч":"ᚳ","ш":"ᛘ","щ":"ᛘ","ъ":"ᛁ","ы":"ᚤ","ь":"ᛁ","э":"ᛖ","ю":"ᚣ","я":"ᛄ"," ":"  "};
-
-    function toRunes(text) {
-        return text.toLowerCase().split('').map(char => runeMap[char] || char).join('');
-    }
-
-    function toggleShadow() {
-        document.body.classList.toggle('shadow-active');
-        const isActive = document.body.classList.contains('shadow-active');
-        document.getElementById('shadow-btn').innerText = isActive ? "ОТКРЫТЬ ОЧИ" : "ТЕНЕВОЙ РЕЖИМ";
-        document.querySelectorAll('.entry').forEach(entry => {
-            const span = entry.querySelector('.msg-content');
-            const original = span.getAttribute('data-original');
-            span.innerText = isActive ? toRunes(original) : original;
-        });
-    }
-
     function addMsg(user, text) {
         const log = document.getElementById('log');
         const isMine = user === myName ? 'mine' : '';
-        const isActive = document.body.classList.contains('shadow-active');
-        const displayText = isActive ? toRunes(text) : text;
-        const div = document.createElement('div');
-        div.className = `entry ${isMine}`;
-        div.innerHTML = `<b>${user}</b><span class="msg-content" data-original="${text}">${displayText}</span>`;
-        div.onmouseenter = () => { if(document.body.classList.contains('shadow-active')) div.querySelector('.msg-content').innerText = text; };
-        div.onmouseleave = () => { if(document.body.classList.contains('shadow-active')) div.querySelector('.msg-content').innerText = toRunes(text); };
-        log.appendChild(div);
+        log.innerHTML += `<div class="entry ${isMine}"><b>${user}</b>${text}</div>`;
         log.scrollTop = log.scrollHeight;
+    }
+
+    function updateProfile() {
+        document.getElementById('dynamic-avatar').innerText = myName.charAt(0);
+        document.getElementById('display-nick').innerText = myName;
+        document.getElementById('lvl-display').innerText = "Level " + Math.floor(myExp / 10);
+    }
+
+    function saveNewNick(v) { if(v.trim()){ localStorage.setItem('arcanum_nick', v.trim()); location.reload(); } }
+    function loadHistory() { channel.history({ limit: 40 }, (err, page) => { if (!err) page.items.reverse().forEach(m => addMsg(m.data.u, m.data.t)); }); }
+    function sendTyping() { channel.publish('typing', { u: myName }); }
+
+    channel.subscribe('typing', (m) => { if(m.data.u !== myName) { document.getElementById('typing-status').innerText = `${m.data.u} чертит руны...`; setTimeout(() => { document.getElementById('typing-status').innerText = "СВИТОК ШЕПОТА"; }, 2000); } });
+    channel.subscribe('post', (m) => addMsg(m.data.u, m.data.t));
+    channel.presence.subscribe('enter', updatePresence);
+    channel.presence.subscribe('leave', updatePresence);
+    channel.presence.enter();
+
+    function updatePresence() {
+        channel.presence.get((err, members) => { 
+            if (!err) {
+                document.getElementById('online-count-num').innerText = members.length;
+                const listContainer = document.getElementById('presence-users');
+                listContainer.innerHTML = "";
+                members.forEach(m => { listContainer.innerHTML += `<div style='padding:5px 0; font-size:13px; color:#8a7fb9;'>✧ ${m.clientId}</div>`; });
+            }
+        });
     }
 
     function send() {
@@ -177,32 +175,8 @@
             myExp += 1; localStorage.setItem('arcanum_exp', myExp); updateProfile();
         }
     }
-
-    function updateProfile() {
-        document.getElementById('dynamic-avatar').innerText = myName.charAt(0);
-        document.getElementById('display-nick').innerText = myName;
-        document.getElementById('lvl-display').innerText = "Level " + Math.floor(myExp / 10);
-    }
-
-    function saveNewNick(v) { if(v.trim()){ localStorage.setItem('arcanum_nick', v.trim()); location.reload(); } }
-    
-    function updatePresence() {
-        channel.presence.get((err, members) => { 
-            if (!err) {
-                document.getElementById('online-count-num').innerText = members.length;
-                const list = document.getElementById('presence-users');
-                list.innerHTML = "<b style='color:#d4af37'>МАГИ:</b><hr style='border:0; border-top:1px solid #2a1a3a; margin:5px 0;'>";
-                members.forEach(m => { list.innerHTML += `<div style='color:#8a7fb9; padding:3px 0;'>✧ ${m.clientId}</div>`; });
-            }
-        });
-    }
-
-    channel.subscribe('post', (m) => addMsg(m.data.u, m.data.t));
-    channel.presence.subscribe('enter', updatePresence);
-    channel.presence.subscribe('leave', updatePresence);
-    channel.presence.enter();
     document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
-    updateProfile();
+    updateProfile(); loadHistory();
 </script>
 </body>
 </html>
