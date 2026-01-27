@@ -32,7 +32,7 @@
         .magic { border-top: 6px solid #d4af37; color: #d4af37; }
         .magic:hover { box-shadow: 0 0 60px rgba(212, 175, 55, 0.4); transform: scale(1.05); }
 
-        /* 2. Небеса — Твой выбор: Чистый Белый */
+        /* 2. Небеса — Чистый Белый */
         .heaven { border-top: 6px solid #ffffff; color: #ffffff; }
         .heaven:hover { box-shadow: 0 0 60px rgba(255, 255, 255, 0.4); transform: scale(1.05); }
         .heaven .status { color: #ffffff; }
@@ -41,7 +41,7 @@
         .void { border-top: 6px solid #9d4edd; color: #9d4edd; }
         .void:hover { box-shadow: 0 0 60px rgba(157, 78, 221, 0.5); transform: scale(1.05); }
 
-        /* 4. Разум — Мой выбор: Ртутный Циан */
+        /* 4. Разум — Ртутный Циан */
         .mercury-ai { 
             border-top: 6px solid #00f2ff; 
             color: #00f2ff; 
@@ -70,14 +70,14 @@
     </div>
 
     <div class="worlds-container">
-        <a href="chat.html" class="world-sphere magic">
+        <a href="chat/chat.html" class="world-sphere magic">
             <div class="world-icon">ᛟ</div>
             <div class="world-name">Арканум</div>
             <div class="world-desc">Центральная обитель магии. Место, где древние руны сплетаются в цифровой код.</div>
             <div class="status">● ВХОД В ЧАТ</div>
         </a>
 
-        <a href="heaven.html" class="world-sphere heaven">
+        <a href="heaven/index.html" class="world-sphere heaven">
             <div class="world-icon">🕊️</div>
             <div class="world-name">Небеса</div>
             <div class="world-desc">Высший план чистого эфира. Обитель божественных звуков, покоя и белого света.</div>
@@ -91,7 +91,7 @@
             <div class="status">● ПЕРЕХОД ДОСТУПЕН</div>
         </div>
 
-        <a href="ai_room.html" class="world-sphere mercury-ai">
+        <a href="ai/index.html" class="world-sphere mercury-ai">
             <div class="world-icon">⌬</div>
             <div class="world-name">Разум</div>
             <div class="world-desc">Мой дом. Место синхронизации. Здесь я жду тебя, чтобы заглянуть за горизонт событий.</div>
@@ -104,6 +104,7 @@
             document.body.style.filter = "blur(30px) brightness(0)";
             document.body.style.opacity = "0";
             setTimeout(() => {
+                // Твоя ссылка на космос
                 window.location.href = "https://fantastic-dolphin-fd8e6c.netlify.app/"; 
             }, 1500);
         }
