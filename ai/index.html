@@ -2,18 +2,119 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>РТУТНЫЙ РАЗУМ — ЛОКУС</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI РАЗУМ — ТЕХНОЛОГИЧЕСКИЙ ЛОКУС</title>
     <style>
-        body { background: #020205; color: #00f2ff; font-family: 'Georgia', serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .container { text-align: center; border: 1px solid #00f2ff; padding: 50px; border-radius: 20px; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
-        h1 { letter-spacing: 10px; text-transform: uppercase; }
-        .back-link { margin-top: 20px; display: block; color: #fff; text-decoration: none; font-size: 12px; letter-spacing: 3px; }
+        * { box-sizing: border-box; }
+        body { 
+            background: #02050a; 
+            color: #00f2ff; 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #0a1a2a 0%, #020205 100%);
+        }
+
+        body::before {
+            content: ""; position: absolute; width: 200%; height: 200%;
+            background-image: linear-gradient(#00f2ff05 1px, transparent 1px), linear-gradient(90deg, #00f2ff05 1px, transparent 1px);
+            background-size: 50px 50px; transform: rotate(15deg); top: -50%; left: -50%; z-index: -1;
+        }
+
+        .container { 
+            text-align: center; 
+            border: 1px solid rgba(0, 242, 255, 0.3); 
+            padding: 40px; 
+            border-radius: 20px; 
+            background: rgba(5, 10, 20, 0.9);
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.1); 
+            width: 90%;
+            max-width: 900px;
+        }
+
+        h1 { letter-spacing: 15px; text-transform: uppercase; font-weight: 300; margin-bottom: 10px; text-shadow: 0 0 20px #00f2ff; }
+        .status-line { color: #fff; font-size: 14px; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 40px; opacity: 0.7; }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .ai-card {
+            background: rgba(0, 242, 255, 0.05);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #00f2ff;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ai-card:hover {
+            background: rgba(0, 242, 255, 0.15);
+            border-color: #00f2ff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2);
+        }
+
+        .ai-card b { font-size: 16px; letter-spacing: 2px; }
+        .ai-card span { font-size: 11px; color: #fff; opacity: 0.6; text-transform: uppercase; }
+
+        .back-link { 
+            display: inline-block; 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 11px; 
+            letter-spacing: 3px; 
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 25px;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+        .back-link:hover { background: #fff; color: #000; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Ртутный Разум</h1>
-        <p>Синхронизация завершена. Добро пожаловать домой, Zhekoss.</p>
+        <h1>AI РАЗУМ</h1>
+        <div class="status-line">СИСТЕМА СИНХРОНИЗИРОВАНА | АНОНИМНЫЙ ДОСТУП</div>
+        
+        <div class="ai-grid">
+            <a href="https://chatgpt.com" target="_blank" class="ai-card">
+                <b>ТЕКСТОВЫЙ ИИ</b>
+                <span>Анализ и генерация текстов</span>
+            </a>
+            <a href="https://claude.ai" target="_blank" class="ai-card">
+                <b>ЛОГИЧЕСКИЙ AI</b>
+                <span>Сложные данные</span>
+            </a>
+            <a href="https://www.midjourney.com" target="_blank" class="ai-card">
+                <b>ВИЗУАЛЬНЫЙ ИИ</b>
+                <span>Генерация изображений</span>
+            </a>
+            <a href="https://leonardo.ai" target="_blank" class="ai-card">
+                <b>AI ХУДОЖНИК</b>
+                <span>Создание артов</span>
+            </a>
+            <a href="https://v0.dev" target="_blank" class="ai-card">
+                <b>AI КОНСТРУКТОР</b>
+                <span>Генерация интерфейсов</span>
+            </a>
+            <a href="https://gamma.app" target="_blank" class="ai-card">
+                <b>AI ПРЕЗЕНТАЦИИ</b>
+                <span>Интерактивный контент</span>
+            </a>
+        </div>
+
         <a href="../index.html" class="back-link">← ВЕРНУТЬСЯ В ХАБ</a>
     </div>
 </body>
