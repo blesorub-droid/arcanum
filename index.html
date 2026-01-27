@@ -84,11 +84,11 @@
             <div class="status">● ПЕРЕХОД ОТКРЫТ</div>
         </a>
 
-        <div class="world-sphere void" onclick="goToGalacticus()">
+        <div class="world-sphere void" onclick="goToBezdna()">
             <div class="world-icon">🛰️</div>
             <div class="world-name">Бездна</div>
             <div class="world-desc">Бескрайний техногенный космос. Холод звезд, вечное движение и пустота.</div>
-            <div class="status">● ПЕРЕХОД ДОСТУПЕН</div>
+            <div class="status">● ДОСТУП ОГРАНИЧЕН</div>
         </div>
 
         <a href="ai/index.html" class="world-sphere mercury-ai">
@@ -100,12 +100,12 @@
     </div>
 
     <script>
-        function goToGalacticus() {
+        function goToBezdna() {
             document.body.style.filter = "blur(30px) brightness(0)";
             document.body.style.opacity = "0";
             setTimeout(() => {
-                // Твоя ссылка на космос
-                window.location.href = "https://fantastic-dolphin-fd8e6c.netlify.app/"; 
+                // ТЕПЕРЬ ВЕДЕТ НА ТВОЮ ЗАГЛУШКУ
+                window.location.href = "bezdna.html"; 
             }, 1500);
         }
     </script>
