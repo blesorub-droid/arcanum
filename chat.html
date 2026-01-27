@@ -68,7 +68,6 @@
         }
         .online-wrapper:hover .presence-list { display: block; }
 
-        /* --- МАГИЧЕСКИЙ СКРОЛЛБАР --- */
         #log { 
             flex-grow: 1; overflow-y: auto; padding: 35px; display: flex; flex-direction: column; gap: 20px; 
             scrollbar-width: thin; scrollbar-color: #d4af3733 rgba(0,0,0,0);
@@ -76,8 +75,6 @@
         #log::-webkit-scrollbar { width: 6px; }
         #log::-webkit-scrollbar-track { background: transparent; }
         #log::-webkit-scrollbar-thumb { background: #d4af3733; border-radius: 10px; }
-        #log::-webkit-scrollbar-thumb:hover { background: #d4af3766; }
-        /* ---------------------------- */
 
         .entry { 
             background: rgba(40, 10, 60, 0.35); padding: 18px 25px; border-left: 4px solid #d4af37; 
@@ -109,6 +106,8 @@
                 <span id="typing-status" style="color:#8a7fb9; font-size:13px; letter-spacing:2px;">СВИТОК ШЕПОТА</span>
                 <span style="color:#2a1a3a">|</span>
                 <a href="ball.html" class="nav-item"><span class="gold-dot">●</span> СФЕРА СУДЬБЫ</a>
+                <span style="color:#2a1a3a">|</span>
+                <a href="arcanum_radio.html" class="nav-item"><span class="gold-dot" style="color:#9d4edd;">●</span> РАДИО ARCANUM</a>
             </div>
             <div class="online-wrapper">
                 ● В СЕТИ: <span id="online-count-num">1</span>
