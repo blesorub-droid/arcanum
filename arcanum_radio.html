@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ARCANUM — Эфир Миров</title>
+    <style>
+        :root { --gold: #d4af37; --silver: #b4b4b4; --magic-violet: #1a0a2a; }
+        body, html { 
+            margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; 
+            background: #050505; font-family: 'Georgia', serif; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        
+        .magic-bg { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: radial-gradient(circle at center, #1a0a2a 0%, #050505 100%); 
+            z-index: 1; 
+        }
+        
+        .terminal { 
+            position: relative; z-index: 10; background: rgba(10, 5, 15, 0.85); 
+            backdrop-filter: blur(15px); border: 1px solid rgba(212, 175, 55, 0.2); 
+            padding: 40px; width: 90%; max-width: 950px; border-radius: 15px; 
+            box-shadow: 0 0 60px rgba(157, 78, 221, 0.1); 
+        }
+
+        .voice-link { 
+            position: absolute; top: 25px; right: 30px; cursor: pointer; 
+            text-align: center; opacity: 0.7; transition: 0.4s; 
+        }
+        .voice-link:hover { opacity: 1; filter: drop-shadow(0 0 10px var(--gold)); }
+        .v-icon { font-size: 32px; color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+        .v-tag { font-size: 9px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-top: 5px; }
+
+        .header { text-align: center; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { color: var(--gold); margin: 0; font-size: 2.5em; letter-spacing: 6px; text-transform: uppercase; text-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+        .header p { color: #8a7fb9; font-size: 0.9em; letter-spacing: 2px; margin: 10px 0 0; text-transform: uppercase; }
+
+        .display { background: rgba(212, 175, 55, 0.03); padding: 25px; margin-bottom: 30px; text-align: center; border-radius: 8px; border: 1px solid rgba(212, 175, 55, 0.1); }
+        #cur-st { font-size: 1.8em; font-weight: bold; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+        
+        .vol-wrap { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 20px; }
+        input[type=range] { width: 300px; accent-color: var(--gold); cursor: pointer; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 20px; }
+        .card { 
+            background: rgba(212, 175, 55, 0.02); border: 1px solid rgba(212, 175, 55, 0.1); 
+            padding: 20px; border-radius: 8px; transition: 0.4s; text-align: center; 
+        }
+        .card.active { border-color: var(--gold); background: rgba(212, 175, 55, 0.08); box-shadow: 0 0 20px rgba(212, 175, 55, 0.1); }
+        
+        /* Оригинальные названия, но в серебре */
+        .st-name { color: var(--silver); font-weight: bold; font-size: 1em; margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase; }
+        
+        .btns { display: flex; gap: 15px; justify-content: center; }
+        .btn { 
+            background: transparent; border: 1px solid rgba(212, 175, 55, 0.3); 
+            color: var(--gold); width: 50px; height: 40px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2em; cursor: pointer; transition: 0.3s; border-radius: 4px;
+        }
+        .btn-play:hover { background: var(--gold); color: #000; box-shadow: 0 0 10px var(--gold); }
+        .btn-stop:hover { border-color: #ff4444; color: #ff4444; box-shadow: 0 0 10px #ff444433; }
+
+        .eq { display: flex; justify-content: center; gap: 4px; height: 15px; margin-top: 15px; }
+        .bar { width: 3px; background: var(--gold); height: 30%; transition: 0.1s; box-shadow: 0 0 5px var(--gold); }
+
+        .back-btn { 
+            display: block; text-align: center; margin-top: 30px; color: #8a7fb9; 
+            text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .back-btn:hover { color: var(--gold); }
+    </style>
+</head>
+<body>
+    <div class="magic-bg"></div>
+    <div class="terminal">
+        <div class="voice-link" onclick="playWelcome()">
+            <div class="v-icon">✧</div>
+            <div class="v-tag">Голос_Совета</div>
+            <audio id="welcome-audio" src="audio/welcome.mp3"></audio>
+        </div>
+
+        <div class="header">
+            <h1>ЭФИР АРКАНУМА</h1>
+            <p>вибрации древних миров, разлитые в пустоте</p>
+        </div>
+
+        <div class="display">
+            <div id="cur-st">ЭФИР МОЛЧИТ</div>
+            <div class="vol-wrap">
+                <span style="font-size: 0.8em; color: var(--gold); opacity: 0.6;">ШЕПОТ</span>
+                <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
+                <span style="font-size: 0.8em; color: var(--gold); opacity: 0.6;">КРИК</span>
+            </div>
+            <div class="eq"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        </div>
+
+        <div class="grid">
+            <div class="card" id="c1"><div class="st-name">SYNTHWAVE</div><div class="btns"><button class="btn btn-play" onclick="connect('https://stream.nightride.fm/nightride.m4a', 'SYNTHWAVE', 'c1')">▶</button><button class="btn btn-stop" onclick="stopAudio()">■</button></div></div>
+            <div class="card" id="c2"><div class="st-name">CHILLOUT</div><div class="btns"><button class="btn btn-play" onclick="connect('https://ice1.somafm.com/groovesalad-128-mp3', 'CHILLOUT', 'c2')">▶</button><button class="btn btn-stop" onclick="stopAudio()">■</button></div></div>
+            <div class="card" id="c3"><div class="st-name">1.FM TRANCE</div><div class="btns"><button class="btn btn-play" onclick="connect('https://strm112.1.fm/trance_mobile_mp3', '1.FM TRANCE', 'c3')">▶</button><button class="btn btn-stop" onclick="stopAudio()">■</button></div></div>
+            <div class="card" id="c4"><div class="st-name">PIRATE ST.</div><div class="btns"><button class="btn btn-play" onclick="connect('https://radiorecord.hostingradio.ru/ps96.aacp', 'PIRATE STATION', 'c4')">▶</button><button class="btn btn-stop" onclick="stopAudio()">■</button></div></div>
+            <div class="card" id="c5"><div class="st-name">D&B CLASSIC</div><div class="btns"><button class="btn btn-play" onclick="connect('https://radiorecord.hostingradio.ru/dc96.aacp', 'D&B CLASSIC', 'c5')">▶</button><button class="btn btn-stop" onclick="stopAudio()">■</button></div></div>
+        </div>
+
+        <a href="chat.html" class="back-btn">← Вернуться к Свитку Шепота</a>
+    </div>
+
+    <audio id="audio-core"></audio>
+
+    <script>
+        const audio = document.getElementById('audio-core');
+        const welcome = document.getElementById('welcome-audio');
+        const stLabel = document.getElementById('cur-st');
+        let currentVolume = 0.5;
+
+        function setVolume(v) { currentVolume = v; audio.volume = v; }
+        function playWelcome() { 
+            if (!audio.paused) { audio.volume = currentVolume * 0.2; } 
+            welcome.currentTime = 0; welcome.play(); 
+            welcome.onended = () => { if (!audio.paused) { audio.volume = currentVolume; } }; 
+        }
+
+        function connect(url, name, cardId) { 
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active')); 
+            document.getElementById(cardId).classList.add('active'); 
+            stLabel.innerText = "ПРИЗЫВ ПОТОКА..."; 
+            audio.src = url; audio.load(); 
+            audio.play().then(() => { stLabel.innerText = name; startV(); }); 
+        }
+
+        function stopAudio() { 
+            audio.pause(); stLabel.innerText = "ЭФИР МОЛЧИТ"; 
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active')); 
+            stopV(); 
+        }
+
+        const bars = document.querySelectorAll('.bar'); 
+        let vInt;
+        function startV() { 
+            clearInterval(vInt); 
+            vInt = setInterval(() => { 
+                bars.forEach(b => { b.style.height = (Math.random() * 90 + 10) + "%"; }); 
+            }, 100); 
+        }
+        function stopV() { clearInterval(vInt); bars.forEach(b => { b.style.height = "30%"; }); }
+    </script>
+</body>
+</html>
