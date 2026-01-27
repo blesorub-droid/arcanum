@@ -9,22 +9,22 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: radial-gradient(circle at center, #0a1a2a 0%, #000 100%);
+      background: #000; /* Глубокий черный фон */
       color: #00f2ff;
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
       height: 100vh;
       position: relative;
     }
 
-    /* ФОНОВАЯ СЕТКА */
+    /* ТВОЯ СЕТКА ВМЕСТО ЗВЕЗД */
     body::before {
       content: ""; 
       position: absolute; 
       width: 200%; height: 200%;
       background-image: 
-        linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px), 
-        linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+        linear-gradient(rgba(0, 242, 255, 0.07) 1px, transparent 1px), 
+        linear-gradient(90deg, rgba(0, 242, 255, 0.07) 1px, transparent 1px);
       background-size: 50px 50px; 
       transform: rotate(15deg); 
       top: -50%; left: -50%; 
@@ -35,7 +35,7 @@
     .container {
       position: relative;
       z-index: 10;
-      max-width: 900px;
+      max-width: 800px;
       margin: 0 auto;
       padding: 20px;
       height: 100vh;
@@ -47,106 +47,105 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 0;
+      padding: 16px 0;
       border-bottom: 1px solid rgba(0, 242, 255, 0.2);
       margin-bottom: 20px;
     }
 
     .logo {
-      font-size: 20px;
+      font-size: 28px;
       font-weight: 300;
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      text-shadow: 0 0 15px #00f2ff;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(0, 242, 255, 0.6);
+      color: #00f2ff;
     }
 
-    .controls { display: flex; gap: 10px; }
+    .controls { display: flex; gap: 12px; }
 
     .controls button, .model-select {
       background: rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(0, 242, 255, 0.3);
       color: #00f2ff;
-      padding: 6px 15px;
-      border-radius: 5px;
-      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
       cursor: pointer;
-      text-transform: uppercase;
-      outline: none;
+      transition: all 0.3s;
     }
 
     .chat-box {
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
-      background: rgba(5, 10, 20, 0.9);
-      border: 1px solid rgba(0, 242, 255, 0.1);
-      border-radius: 15px;
+      padding: 16px;
+      background: rgba(5, 10, 20, 0.7);
+      border-radius: 12px;
       margin-bottom: 20px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      scrollbar-width: thin;
-      scrollbar-color: #00f2ff33 transparent;
+      gap: 16px;
+      border: 1px solid rgba(0, 242, 255, 0.1);
     }
 
     .message {
-      max-width: 80%;
-      padding: 15px;
-      border-radius: 10px;
-      line-height: 1.6;
-      font-size: 15px;
+      max-width: 85%;
+      padding: 14px 18px;
+      border-radius: 14px;
+      line-height: 1.5;
+      position: relative;
     }
 
     .message.user {
       align-self: flex-end;
       background: linear-gradient(135deg, #0077ff, #00f2ff);
       color: #000;
-      border-bottom-right-radius: 2px;
+      font-weight: bold;
+      border-bottom-right-radius: 4px;
     }
 
     .message.ai {
       align-self: flex-start;
-      background: rgba(255, 255, 255, 0.03);
-      border-left: 3px solid #00f2ff;
+      background: rgba(20, 15, 40, 0.8);
       color: #dcdcff;
+      border: 1px solid rgba(0, 242, 255, 0.3);
+      border-bottom-left-radius: 4px;
     }
 
     .chat-controls { display: flex; gap: 10px; }
 
     .chat-input {
       flex: 1;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(0, 242, 255, 0.3);
       color: #00f2ff;
-      padding: 15px;
-      border-radius: 10px;
+      padding: 14px;
+      border-radius: 12px;
       font-size: 16px;
       outline: none;
     }
 
     .send-btn {
-      width: 60px;
+      width: 50px;
       background: #00f2ff;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       color: #000;
-      cursor: pointer;
       font-size: 20px;
+      cursor: pointer;
     }
 
-    .back-btn {
+    .back-to-menu {
       position: absolute;
-      bottom: 20px; left: 20px;
-      color: rgba(255, 255, 255, 0.4);
+      bottom: 16px;
+      left: 16px;
+      padding: 8px 18px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(0, 242, 255, 0.3);
+      border-radius: 20px;
+      color: #00f2ff;
+      font-size: 14px;
       text-decoration: none;
-      font-size: 12px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: 0.3s;
+      z-index: 100;
     }
-    .back-btn:hover { color: #00f2ff; }
-
-    pre, code { background: rgba(0, 0, 0, 0.5); padding: 10px; border-radius: 5px; color: #00f2ff; display: block; margin-top: 10px;}
   </style>
 </head>
 <body>
@@ -157,7 +156,7 @@
     <header>
       <div class="logo">ЛОКУС AI</div>
       <div class="controls">
-        <button id="newSessionBtn">🌀 СБРОС</button>
+        <button id="newSessionBtn">🌀 Новая связь</button>
         <select id="chat-model-select" class="model-select">
           <option value="openai-fast">LOGIC AI</option>
           <option value="gemini" selected>CORE AI</option>
@@ -167,16 +166,16 @@
     </header>
 
     <div class="chat-box" id="chat-box">
-      <div class="message ai">Система готова. Канал связи синхронизирован.</div>
+      <div class="message ai">Сигнал принят. Локус активен. Напиши своё слово.</div>
     </div>
 
     <div class="chat-controls">
-      <input type="text" id="chat-input" class="chat-input" placeholder="Введите сообщение..." onkeypress="handleEnter(event)" />
+      <input type="text" id="chat-input" class="chat-input" placeholder="Введите сигнал..." onkeypress="handleEnter(event)" />
       <button class="send-btn" onclick="sendMessage()">➤</button>
     </div>
   </div>
 
-  <a href="index.html" class="back-btn">← НАЗАД В МЕНЮ</a>
+  <a href="index.html" class="back-to-menu">← НАЗАД В МЕНЮ</a>
 
   <script>
     // Полноэкранный режим
@@ -185,13 +184,13 @@
       else document.exitFullscreen();
     });
 
-    // Очистка
+    // Новая связь
     document.getElementById('newSessionBtn').addEventListener('click', () => {
       chatHistory = [];
-      document.getElementById('chat-box').innerHTML = '<div class="message ai">История очищена. Жду сигнал.</div>';
+      document.getElementById('chat-box').innerHTML = '<div class="message ai">Связь обновлена. Локус снова слушает.</div>';
     });
 
-    // Аудио приветствие
+    // Твоё аудио
     let greetingPlayed = false;
     const greetingAudio = document.getElementById('greetingAudio');
     document.body.addEventListener('click', () => {
@@ -201,7 +200,7 @@
       }
     }, { once: true });
 
-    // ЛОГИКА ЧАТА
+    // ТВОЯ ЛОГИКА ЧАТА (без изменений)
     let chatHistory = [];
 
     function addMessage(text, isUser = false, model = null) {
@@ -229,7 +228,7 @@
       chatHistory.push({ role: "user", content: text });
       const loadingMsg = document.createElement('div');
       loadingMsg.className = 'message ai';
-      loadingMsg.innerHTML = '... СИНХРОНИЗАЦИЯ ...';
+      loadingMsg.innerHTML = 'Сигнал в пути...';
       document.getElementById('chat-box').appendChild(loadingMsg);
       document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
       try {
