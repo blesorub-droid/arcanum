@@ -13,6 +13,7 @@
             background: radial-gradient(circle, #1a0a2a 0%, #050505 100%); overflow: hidden;
         }
 
+        /* ТЕНЕВОЙ ЭФФЕКТ ДЛЯ РУН */
         .shadow-active .msg-content {
             color: #d4af37 !important;
             letter-spacing: 3px;
@@ -59,7 +60,6 @@
         .nav-item { color: #d4af37; text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; }
         .nav-item:hover { text-shadow: 0 0 10px #d4af37; }
 
-        /* ВЕРНУЛ СТИЛИ СПИСКА ОНЛАЙН */
         .online-wrapper { position: relative; cursor: pointer; color: #8a7fb9; font-size: 13px; letter-spacing: 2px; }
         #online-count-num { color: #d4af37; font-size: 22px; font-weight: bold; text-shadow: 0 0 10px #d4af37; margin-left: 5px; }
         .presence-list {
@@ -173,7 +173,6 @@
         document.getElementById('lvl-display').innerText = "Level " + Math.floor(myExp / 10);
     }
 
-    // ВЕРНУЛ ЛОГИКУ PRESENCE
     function updatePresence() {
         channel.presence.get((err, members) => { 
             if (!err) {
@@ -187,15 +186,21 @@
 
     function saveNewNick(v) { if(v.trim()){ localStorage.setItem('arcanum_nick', v.trim()); location.reload(); } }
     
+    function loadHistory() { 
+        channel.history({ limit: 40 }, (err, page) => { 
+            if (!err) page.items.reverse().forEach(m => addMsg(m.data.u, m.data.t)); 
+        }); 
+    }
+
     channel.subscribe('post', (m) => addMsg(m.data.u, m.data.t));
-    
-    // АКТИВИРУЕМ ОНЛАЙН-ОТСЛЕЖИВАНИЕ
     channel.presence.subscribe('enter', updatePresence);
     channel.presence.subscribe('leave', updatePresence);
     channel.presence.enter();
     
     document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
-    updateProfile();
+    
+    updateProfile(); 
+    loadHistory(); 
 </script>
 </body>
 </html>
