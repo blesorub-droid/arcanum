@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Клодовая ИИ — Визионер</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent-color: #00f2ff; /* Цифровой голубой */
+      --bg-dark: #050a0f;
+      --panel-bg: rgba(10, 25, 30, 0.7);
+      --neon-glow: 0 0 15px rgba(0, 242, 255, 0.6);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #0d1b2a 0%, #050a0f 100%);
+      color: #e0faff;
+      font-family: 'Exo 2', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Анимированный фон сетки */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: -1;
+    }
+
+    .stars {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle var(--duration) infinite ease-in-out;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 35px;
+      border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+      padding-bottom: 20px;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-shadow: var(--neon-glow);
+      color: var(--accent-color);
+    }
+
+    .sub-logo {
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: #70a1ff;
+      margin-top: 5px;
+      text-transform: uppercase;
+    }
+
+    .input-group {
+      margin-bottom: 25px;
+      background: var(--panel-bg);
+      padding: 15px;
+      border-radius: 15px;
+      border-left: 3px solid var(--accent-color);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: var(--accent-color);
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+    }
+
+    select, textarea {
+      width: 100%;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 242, 255, 0.2);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    select:focus, textarea:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 20px;
+      background: transparent;
+      border: 2px solid var(--accent-color);
+      border-radius: 12px;
+      color: var(--accent-color);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .action-btn:hover {
+      background: var(--accent-color);
+      color: #000;
+      box-shadow: var(--neon-glow);
+    }
+
+    .download-btn {
+      background: #004e52;
+      border: none;
+      color: white;
+      display: none;
+      margin-top: 15px;
+    }
+
+    #image-container {
+      margin-top: 30px;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
+      border: 1px dashed rgba(0, 242, 255, 0.3);
+      padding: 10px;
+      margin-bottom: 60px;
+    }
+
+    img.generated-img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .loading-pulse {
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      color: var(--accent-color);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0.4; transform: scale(0.98); }
+    }
+
+    /* Навигация */
+    .nav-buttons {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      gap: 15px;
+      z-index: 100;
+    }
+
+    .btn-ui {
+      padding: 10px 20px;
+      background: var(--panel-bg);
+      border: 1px solid rgba(0, 242, 255, 0.3);
+      border-radius: 30px;
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: 0.3s;
+    }
+
+    .btn-ui:hover {
+      border-color: var(--accent-color);
+      background: rgba(0, 242, 255, 0.1);
+    }
+
+    .fs-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stars" id="stars"></div>
+
+  <audio id="greetingAudio" src="../audio/greeting_vizariyon.mp3" preload="auto"></audio>
+
+  <div class="container">
+    <div class="header">
+      <div class="logo">ВИЗИОНЕР</div>
+      <div class="sub-logo">Клодовая ИИ — Разум АИ</div>
+    </div>
+
+    <div class="input-group">
+      <label>Конфигурация Ядра</label>
+      <select id="model-select">
+        <optgroup label="⚡ Скоростные">
+          <option value="turbo">SDXL Turbo (Мгновенно)</option>
+          <option value="flux">Flux Speed</option>
+        </optgroup>
+        <optgroup label="💎 Высокое разрешение">
+          <option value="flux-realism" selected>Ultra Realism (Фото)</option>
+          <option value="midjourney">Artistic (Midjourney Style)</option>
+        </optgroup>
+        <optgroup label="🎨 Творческие">
+          <option value="flux-anime">Anime Studio</option>
+          <option value="flux-3d">Render 3D</option>
+          <option value="pixel">Retro Pixel</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label>Масштаб Проекции</label>
+      <select id="aspect-select">
+        <option value="1024x1024">Квадрат 1:1</option>
+        <option value="720x1280">Вертикаль 9:16 (Story)</option>
+        <option value="1280x720">Широкий 16:9 (HD)</option>
+        <option value="1024x1536">Портрет 2:3</option>
+      </select>
+    </div>
+
+    <div class="input-group" style="border-left-color: #ff007b;">
+      <label style="color:#ff007b;">Запрос для Синтеза</label>
+      <textarea id="prompt-input" placeholder="Введите параметры визуализации..."></textarea>
+    </div>
+
+    <button onclick="generateImage()" class="action-btn">Синтезировать Образ</button>
+    <button id="download-btn" onclick="downloadImage()" class="action-btn download-btn">Сохранить в Хранилище</button>
+
+    <div id="image-container">
+      <div class="loading-pulse">Система ожидает ввод...</div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <div class="btn-ui" onclick="window.location.href='../universe.html'">← В Хаб</div>
+  </div>
+  
+  <div class="btn-ui fs-btn" id="fullscreenToggle">⛶</div>
+
+  <script>
+    // Генерация звездного фона
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 120; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.width = star.style.height = `${Math.random() * 2.5}px`;
+      star.style.setProperty('--duration', `${3 + Math.random() * 7}s`);
+      star.style.animationDelay = `${Math.random() * 5}s`;
+      starsContainer.appendChild(star);
+    }
+
+    // Fullscreen
+    document.getElementById('fullscreenToggle').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(e => console.error(e));
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // Голос
+    let audioInit = false;
+    document.body.addEventListener('click', () => {
+      if (!audioInit) {
+        document.getElementById('greetingAudio').play().catch(() => {});
+        audioInit = true;
+      }
+    }, { once: true });
+
+    // Генерация
+    async function generateImage() {
+      const btn = document.querySelector('.action-btn');
+      const dlBtn = document.getElementById('download-btn');
+      const container = document.getElementById('image-container');
+      const prompt = document.getElementById('prompt-input').value.trim();
+      
+      if (!prompt) {
+        alert("Поле запроса пусто. Введите данные для синтеза.");
+        return;
+      }
+
+      const model = document.getElementById('model-select').value;
+      const [w, h] = document.getElementById('aspect-select').value.split('x');
+      const seed = Math.floor(Math.random() * 9999999);
+
+      btn.disabled = true;
+      btn.innerText = "Идет Синтез...";
+      dlBtn.style.display = 'none';
+      container.innerHTML = '<div class="loading-pulse">Подключение к нейронной сети...</div>';
+
+      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?model=${model}&width=${w}&height=${h}&seed=${seed}&nologo=true`;
+
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.className = "generated-img";
+      img.src = url;
+
+      img.onload = () => {
+        container.innerHTML = "";
+        container.appendChild(img);
+        btn.disabled = false;
+        btn.innerText = "Синтезировать Образ";
+        dlBtn.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth' });
+      };
+
+      img.onerror = () => {
+        container.innerHTML = "<div style='color:#ff4757'>Ошибка протокола. Повторите попытку.</div>";
+        btn.disabled = false;
+        btn.innerText = "Синтезировать Образ";
+      };
+    }
+
+    async function downloadImage() {
+      const img = document.querySelector('.generated-img');
+      if (!img) return;
+      try {
+        const response = await fetch(img.src);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `AI_Vision_${Date.now()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } catch (e) {
+        window.open(img.src, '_blank');
+      }
+    }
+  </script>
+</body>
+</html>
