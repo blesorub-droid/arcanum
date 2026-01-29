@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Клодовая ИИ — Финал v3.3</title>
+    <title>Клодовая ИИ — Финал v3.4</title>
     <style>
         :root {
             --neon: #00f2ff;
@@ -10,14 +10,14 @@
             --bg: #02050a;
         }
 
-        /* ПОЧИНИЛ СКРОЛЛ ТУТ */
+        /* Исправленный скролл всей страницы */
         html, body {
             min-height: 100%;
-            overflow-y: auto; 
+            overflow-y: auto;
+            background: var(--bg);
         }
 
         body {
-            background: var(--bg);
             color: #fff;
             font-family: sans-serif;
             margin: 0;
@@ -37,6 +37,7 @@
 
         .hub-description { color: #444; margin-bottom: 20px; font-size: 0.75em; }
 
+        /* Сетка блоков - компактная */
         .hub-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -49,7 +50,7 @@
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(0, 242, 255, 0.1);
             border-radius: 6px;
-            height: 60px; /* Еще компактнее */
+            height: 65px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -61,20 +62,21 @@
         .module-card:hover {
             background: rgba(255, 255, 255, 0.07);
             border-color: var(--accent);
+            transform: translateY(-2px);
         }
 
         .module-card h3 { margin: 0; color: var(--accent); font-size: 0.85em; }
         .module-card p { margin: 2px 0 0 0; color: #555; font-size: 0.65em; }
 
+        /* Окно инструмента */
         .tool-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.96);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            overflow-y: auto; /* Чтобы внутри окна тоже можно было крутить */
         }
 
         .tool-content {
@@ -86,7 +88,6 @@
             border: 1px solid var(--accent);
             position: relative;
             text-align: center;
-            margin: 20px auto;
         }
 
         .close-btn { position: absolute; top: 10px; right: 15px; color: #fff; font-size: 25px; cursor: pointer; }
@@ -96,13 +97,18 @@
             padding: 30px; border-radius: 10px; margin: 15px 0;
             background: rgba(255, 140, 0, 0.03);
             cursor: pointer;
+            color: #888;
+            font-size: 0.9em;
         }
 
-        canvas { width: 100%; border-radius: 4px; display: none; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #drop-zone:hover { background: rgba(255, 140, 0, 0.06); color: #fff; }
+
+        canvas { width: 100%; border-radius: 4px; display: none; margin-top: 10px; }
 
         .btn {
             background: var(--accent); color: #fff; border: none;
             padding: 10px 30px; border-radius: 4px; cursor: pointer; font-weight: bold;
+            text-transform: uppercase;
         }
 
         #file-input { display: none; }
@@ -116,28 +122,30 @@
     <div class="hub-grid">
         <div class="module-card" onclick="openTool('cover-tool')">
             <h3>ОБЛОЖКИ 16:9</h3>
-            <p>Тот самый идеальный квадрат</p>
+            <p>Идеальный квадрат и чистый фон</p>
         </div>
+        
         <div class="module-card" onclick="location.href='ai.html'">
             <h3>РАЗУМ (AI)</h3>
-            <p>Переход в нейросеть</p>
+            <p>Твой основной интеллект</p>
         </div>
-        <div class="module-card"><h3>EMPTY</h3><p>Доступно для назначения</p></div>
+
+        <div class="module-card"><h3>СКОРО</h3><p>Новый модуль</p></div>
     </div>
 
     <div id="cover-tool" class="tool-overlay">
         <div class="tool-content">
             <span class="close-btn" onclick="closeTool('cover-tool')">&times;</span>
-            <h2 style="color: var(--accent); font-size: 1.1em;">МАСТЕР ОБЛОЖЕК</h2>
+            <h2 style="color: var(--accent); font-size: 1.1em; margin-bottom: 20px;">МАСТЕР ОБЛОЖЕК</h2>
             
             <div id="drop-zone" onclick="document.getElementById('file-input').click()">
-                КЛИКНИ ИЛИ ПЕРЕТАЩИ СЮДА
+                КЛИКНИ ИЛИ ПЕРЕТАЩИ КАРТИНКУ СЮДА
             </div>
             <input type="file" id="file-input" accept="image/*">
             
             <canvas id="canvas"></canvas>
             <div style="margin-top: 15px;">
-                <button id="download-btn" class="btn" style="display:none;">СКАЧАТЬ</button>
+                <button id="download-btn" class="btn" style="display:none;">СКАЧАТЬ ОБЛОЖКУ</button>
             </div>
         </div>
     </div>
@@ -153,7 +161,7 @@
     const downloadBtn = document.getElementById('download-btn');
 
     fileInput.onchange = (e) => handleFile(e.target.files[0]);
-    dropZone.ondragover = () => false;
+    dropZone.ondragover = (e) => { e.preventDefault(); return false; };
     dropZone.ondrop = (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); };
 
     function handleFile(file) {
@@ -167,7 +175,6 @@
         reader.readAsDataURL(file);
     }
 
-    // ВОТ ОН - ТОТ САМЫЙ ИДЕАЛЬНЫЙ АЛГОРИТМ "УРА"
     function processImage(img) {
         canvas.width = 1920; canvas.height = 1080;
         canvas.style.display = 'block';
@@ -176,25 +183,25 @@
         const sourceX = (img.width - sourceSize) / 2;
         const sourceY = (img.height - sourceSize) / 2;
 
-        // 1. Задний план (Блюр)
+        // 1. Задний план — теперь БЕЗ затемнения краев
         ctx.save();
-        ctx.filter = 'blur(40px) brightness(0.6)';
+        ctx.filter = 'blur(35px) brightness(0.5)'; 
         ctx.drawImage(img, sourceX, sourceY, sourceSize, sourceSize, 0, 0, 1920, 1080);
         ctx.restore();
 
-        // 2. Параметры квадрата (тот самый размер)
+        // 2. Тот самый идеальный квадрат (margin 50)
         const margin = 50; 
-        const boxSize = 1080 - (margin * 2); // Максимальное заполнение высоты
+        const boxSize = 1080 - (margin * 2); 
         const x = (1920 - boxSize) / 2;
         const y = margin;
 
-        // 3. Тень
+        // 3. Тень (глубокая, но чистая)
         ctx.save();
         ctx.shadowColor = 'rgba(0,0,0,0.8)';
-        ctx.shadowBlur = 80;
-        ctx.shadowOffsetY = 40;
+        ctx.shadowBlur = 70;
+        ctx.shadowOffsetY = 35;
 
-        // 4. Рамка (определяем цвет по центру)
+        // 4. Определение цвета рамки по центру
         const tempC = document.createElement('canvas');
         tempC.width = 1; tempC.height = 1;
         const tempCtx = tempC.getContext('2d');
@@ -202,20 +209,19 @@
         const p = tempCtx.getImageData(0, 0, 1, 1).data;
         const autoColor = `rgba(${p[0]}, ${p[1]}, ${p[2]}, 0.9)`;
 
+        // Рисуем рамку
         ctx.beginPath();
-        ctx.roundRect(x, y, boxSize, boxSize, 60); // Скругление 60 как в идеале
-        ctx.lineWidth = 12;
+        ctx.roundRect(x, y, boxSize, boxSize, 65); 
+        ctx.lineWidth = 14;
         ctx.strokeStyle = autoColor;
         ctx.stroke();
         ctx.restore();
 
-        // 5. Вставка картинки в квадрат
+        // 5. Сама картинка
         ctx.save();
         ctx.beginPath();
-        ctx.roundRect(x, y, boxSize, boxSize, 60);
+        ctx.roundRect(x, y, boxSize, boxSize, 65);
         ctx.clip();
-        
-        // Масштабируем так, чтобы заполнило весь квадрат
         const s = Math.max(boxSize / img.width, boxSize / img.height);
         ctx.drawImage(img, x + (boxSize - img.width * s) / 2, y + (boxSize - img.height * s) / 2, img.width * s, img.height * s);
         ctx.restore();
@@ -223,7 +229,7 @@
         downloadBtn.style.display = 'inline-block';
         downloadBtn.onclick = () => {
             const link = document.createElement('a');
-            link.download = `perfect_cover_${Date.now()}.png`;
+            link.download = `ideal_cover_${Date.now()}.png`;
             link.href = canvas.toDataURL('image/png', 1.0);
             link.click();
         };
