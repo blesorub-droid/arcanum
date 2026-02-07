@@ -95,12 +95,12 @@
             <div class="status">● ПЕРЕХОД ОТКРЫТ</div>
         </a>
 
-        <div class="world-sphere void" onclick="goToBezdna()">
+        <a href="bezdna.html" class="world-sphere void">
             <div class="world-icon">🛰️</div>
             <div class="world-name">Бездна</div>
             <div class="world-desc">Бескрайний техногенный космос. Холод звезд, вечное движение и пустота.</div>
-            <div class="status">● ДОСТУП ОГРАНИЧЕН</div>
-        </div>
+            <div class="status">● ПЕРЕХОД ОТКРЫТ</div>
+        </a>
 
         <a href="ai/index.html" class="world-sphere mercury-ai">
             <div class="world-icon">⌬</div>
@@ -111,7 +111,6 @@
     </div>
 
     <script>
-        // Проверка сессии при загрузке страницы
         if (sessionStorage.getItem('arcanum_unlocked') === 'true') {
             document.getElementById('lock-screen').style.display = 'none';
         }
@@ -119,19 +118,14 @@
         function gateKeeper() {
             const input = document.getElementById('passInput').value.toLowerCase().trim();
             if (input === 'orange') {
-                // Сохраняем доступ в сессии
                 sessionStorage.setItem('arcanum_unlocked', 'true');
-                
                 const lock = document.getElementById('lock-screen');
                 lock.style.opacity = '0';
                 setTimeout(() => { lock.style.display = 'none'; }, 1000);
             }
         }
-
-        function goToBezdna() {
-            document.body.style.filter = "blur(30px) brightness(0)";
-            setTimeout(() => { window.location.href = "bezdna.html"; }, 1500);
-        }
+        
+        // Функцию goToBezdna() удалили, так как теперь переход прямой через href
     </script>
 </body>
 </html>
