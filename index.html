@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARCANUM — Выбери свой мир</title>
     <style>
-        /* Слой пароля */
+        /* Слой пароля (orange) */
         #lock-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #020205; display: flex; align-items: center; justify-content: center;
@@ -103,7 +103,6 @@
     </div>
 
     <script>
-        // Пароль: orange [cite: 2026-01-29]
         if (sessionStorage.getItem('arcanum_unlocked') === 'true') {
             document.getElementById('lock-screen').style.display = 'none';
         }
@@ -118,12 +117,11 @@
             }
         }
 
-        // Тот самый переход в Галактикус на внешний сервер
+        // ПЕРЕХОД В ГАЛАКТИКУС (БЕЗДНА)
         function goToBezdna() {
             document.body.style.filter = "blur(30px) brightness(0)";
             setTimeout(() => { 
-                // Возвращаю твою внешнюю ссылку на Бездну
-                window.location.href = "https://galaktikus.online"; 
+                window.location.href = "https://fantastic-dolphin-fd8e6c.netlify.app/"; 
             }, 1500);
         }
     </script>
