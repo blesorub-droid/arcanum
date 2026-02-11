@@ -13,7 +13,7 @@
             background: radial-gradient(circle, #1a0a2a 0%, #050505 100%); overflow: hidden;
         }
 
-        /* ТЕНЕВОЙ ЭФФЕКТ ДЛЯ РУН */
+        /* МАГИЧЕСКИЙ РЕЖИМ */
         .shadow-active .msg-content {
             color: #d4af37 !important;
             letter-spacing: 3px;
@@ -24,12 +24,15 @@
         #terminal {
             display: flex; width: 98%; height: 94vh;
             background: rgba(10, 5, 15, 0.98); border: 1px solid #d4af3733;
-            box-shadow: 0 0 60px rgba(114, 9, 183, 0.4); border-radius: 12px; overflow: hidden;
+            box-shadow: 0 0 60px rgba(138, 43, 226, 0.2); border-radius: 12px; overflow: hidden;
+            position: relative;
         }
+
+        /* ПАНЕЛЬ СЛЕВА */
         #side-panel {
             width: 300px; border-right: 1px solid #2a1a3a;
             display: flex; flex-direction: column; align-items: center;
-            padding: 40px 20px; background: rgba(15, 10, 25, 0.5); gap: 15px;
+            padding: 40px 20px; background: rgba(15, 10, 25, 0.9); gap: 15px; z-index: 20;
         }
         .rune-glow { font-size: 50px; color: #d4af37; text-shadow: 0 0 20px #d4af37; animation: blink 4s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -40,48 +43,67 @@
             color: #d4af37; text-transform: uppercase; box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
         }
         #display-nick { font-size: 26px; letter-spacing: 3px; color: #d4af37; text-transform: uppercase; font-weight: bold; text-align: center; }
-        #lvl-display { font-size: 14px; color: #8a7fb9; letter-spacing: 4px; }
-
+        
         .side-btn {
             width: 100%; background: none; border: 1px solid #2a1a3a;
             color: #8a7fb9; padding: 12px; cursor: pointer; font-size: 11px; text-transform: uppercase; transition: 0.3s;
         }
-        .clear-btn { border: 1px solid #ff4d4d33 !important; color: #ff4d4d !important; opacity: 0.6; }
+        .side-btn:hover { border-color: #d4af37; color: #d4af37; }
         .back-btn { border: 1px solid #d4af37 !important; color: #d4af37 !important; font-weight: bold; }
 
-        #chat-area { flex-grow: 1; display: flex; flex-direction: column; background: #000; position: relative; }
+        /* ЗОНА ЧАТА */
+        #chat-area { flex-grow: 1; display: flex; flex-direction: column; background: #000; position: relative; overflow: hidden; }
+
+        /* НЕОНОВЫЕ РУНЫ НА ФОНЕ */
+        #canvas-runes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .floating-rune {
+            position: absolute; color: transparent; font-size: 32px; user-select: none;
+            -webkit-text-stroke: 1px #8a2be2; filter: drop-shadow(0 0 2px #8a2be2);
+            animation: runeFade 8s forwards ease-in-out;
+        }
+        @keyframes runeFade {
+            0% { opacity: 0; transform: scale(0.8) rotate(-5deg); }
+            20% { opacity: 0.4; transform: scale(1) rotate(0deg); }
+            80% { opacity: 0.4; }
+            100% { opacity: 0; transform: scale(1.1) rotate(5deg); }
+        }
+
+        /* ШАПКА */
         #chat-header { 
             padding: 20px 30px; border-bottom: 1px solid #2a1a3a; 
             display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(10, 10, 20, 0.8); z-index: 10;
+            background: rgba(10, 10, 20, 0.95); z-index: 10;
         }
-        
-        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
         .nav-item { color: #d4af37; text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; }
         .nav-item:hover { text-shadow: 0 0 10px #d4af37; }
 
+        /* СПИСОК ОНЛАЙН (ВОЗВРАЩЕНО) */
         .online-wrapper { position: relative; cursor: pointer; color: #8a7fb9; font-size: 13px; letter-spacing: 2px; }
-        #online-count-num { color: #d4af37; font-size: 22px; font-weight: bold; text-shadow: 0 0 10px #d4af37; margin-left: 5px; }
+        #online-count-num { color: #d4af37; font-size: 20px; font-weight: bold; margin-left: 5px; }
         .presence-list {
-            position: absolute; top: 40px; right: 0; background: #1a0a2a;
+            position: absolute; top: 35px; right: 0; background: #0f0a1a;
             border: 1px solid #d4af37; padding: 15px; border-radius: 8px;
-            display: none; min-width: 200px; z-index: 1000; box-shadow: 0 0 40px #000;
-            text-align: left;
+            display: none; min-width: 180px; z-index: 1000; box-shadow: 0 10px 40px #000;
         }
         .online-wrapper:hover .presence-list { display: block; }
-        
-        #log { flex-grow: 1; overflow-y: auto; padding: 35px; display: flex; flex-direction: column; gap: 20px; }
-        .entry { 
-            background: rgba(40, 10, 60, 0.35); padding: 18px 25px; border-left: 4px solid #d4af37; 
-            align-self: flex-start; border-radius: 6px; max-width: 80%; font-size: 20px;
-        }
-        .entry.mine { align-self: flex-end; border-left: none; border-right: 4px solid #8a7fb9; background: rgba(60, 9, 108, 0.3); }
-        .entry b { display: block; font-size: 13px; color: #9d4edd; margin-bottom: 8px; text-transform: uppercase; }
+        .presence-user { padding: 5px 0; color: #8a7fb9; font-size: 12px; border-bottom: 1px solid #2a1a3a; }
 
-        #input-zone { padding: 30px; border-top: 1px solid #2a1a3a; background: #050505; }
+        /* СООБЩЕНИЯ */
+        #log { flex-grow: 1; overflow-y: auto; padding: 35px; display: flex; flex-direction: column; gap: 20px; z-index: 5; position: relative; }
+        .entry { 
+            background: rgba(15, 5, 25, 0.8); padding: 18px 25px; border-left: 2px solid #d4af37; 
+            align-self: flex-start; border-radius: 4px; max-width: 80%; font-size: 20px;
+            backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .entry.mine { align-self: flex-end; border-left: none; border-right: 2px solid #8a7fb9; background: rgba(30, 10, 50, 0.7); }
+        .entry b { display: block; font-size: 12px; color: #9d4edd; margin-bottom: 8px; text-transform: uppercase; }
+
+        /* ПОЛЕ ВВОДА */
+        #input-zone { padding: 30px; border-top: 1px solid #2a1a3a; background: #050505; z-index: 10; }
         .input-row { display: flex; gap: 15px; }
-        input[type="text"]#user-msg { background: #000; border: 1px solid #2a1a3a; color: #d4af37; padding: 20px; flex-grow: 1; font-size: 20px; outline: none; border-radius: 6px; }
-        .send-btn { background: #d4af37; color: #000; border: none; padding: 0 45px; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 18px; }
+        input[type="text"]#user-msg { background: #000; border: 1px solid #2a1a3a; color: #d4af37; padding: 20px; flex-grow: 1; font-size: 18px; outline: none; border-radius: 6px; }
+        .send-btn { background: #d4af37; color: #000; border: none; padding: 0 40px; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -90,16 +112,17 @@
         <div class="rune-glow">ᛟ</div>
         <div class="avatar-circle" id="dynamic-avatar">?</div>
         <div id="display-nick">МАГ</div>
-        <div id="lvl-display">Level 0</div>
-        <input type="text" id="change-nick" placeholder="Сменить имя" style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:10px; font-size:12px; text-align:center; margin-top:10px;" onchange="saveNewNick(this.value)">
-        <button id="shadow-btn" class="side-btn" onclick="toggleShadow()" style="border-color:#d4af37; color:#d4af37; font-weight:bold; margin-top:10px;">ОТКРЫТЬ ОЧИ</button>
-        <button class="side-btn clear-btn" onclick="document.getElementById('log').innerHTML=''" style="margin-top:10px;">ОЧИСТИТЬ СВИТОК</button>
-        <button class="side-btn back-btn" onclick="location.href='../index.html'" style="margin-top:auto;">ВЕРНУТЬСЯ В МЕНЮ</button>
+        <div id="lvl-display" style="color:#8a7fb9; font-size:12px; letter-spacing:3px;">LEVEL 0</div>
+        <input type="text" id="change-nick" placeholder="Имя мага..." style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:10px; font-size:12px; text-align:center; margin-top:10px;" onchange="saveNewNick(this.value)">
+        <button id="shadow-btn" class="side-btn" onclick="toggleShadow()" style="border-color:#d4af37; color:#d4af37; margin-top:10px;">ОТКРЫТЬ ОЧИ</button>
+        <button class="side-btn" onclick="document.getElementById('log').innerHTML=''" style="margin-top:10px; color:#ff4d4d; border-color:#ff4d4d33;">ОЧИСТИТЬ</button>
+        <button class="side-btn back-btn" onclick="location.href='../index.html'" style="margin-top:auto;">ВЫЙТИ</button>
     </div>
     <div id="chat-area">
+        <div id="canvas-runes"></div>
         <div id="chat-header">
             <div class="nav-links">
-                <span id="typing-status" style="color:#8a7fb9; font-size:13px;">СВИТОК ШЕПОТА</span>
+                <span style="color:#d4af37; font-size:13px; letter-spacing:2px;">СВИТОК ШЕПОТА</span>
                 <span style="color:#2a1a3a">|</span>
                 <a href="ball.html" class="nav-item">● СФЕРА СУДЬБЫ</a>
                 <span style="color:#2a1a3a">|</span>
@@ -108,8 +131,7 @@
             <div class="online-wrapper">
                 ● В СЕТИ: <span id="online-count-num">1</span>
                 <div class="presence-list" id="presence-box">
-                    <b style="color:#d4af37; font-size:12px;">МАГИ В ЭФИРЕ:</b>
-                    <hr style="border:0; border-top:1px solid #2a1a3a; margin:10px 0;">
+                    <div style="color:#d4af37; font-size:11px; margin-bottom:10px; border-bottom:1px solid #d4af3733;">МАГИ В ЭФИРЕ:</div>
                     <div id="presence-users"></div>
                 </div>
             </div>
@@ -130,32 +152,51 @@
     const ably = new Ably.Realtime({ key: 'FO1MkA.QBgrTg:OjC-PQMR4Coi4nxjLyFe84T8uKnxzl0lFkFfDPyfDYg', clientId: myName });
     const channel = ably.channels.get('arcanum_stream');
 
-    const runeMap = {"а":"ᚫ","б":"ᛒ","в":"ᚠ","г":"ᚷ","д":"ᛞ","е":"ᛖ","ё":"ᛖ","ж":"ᛉ","з":"ᛈ","и":"ᛁ","й":"ᛁ","к":"ᚲ","л":"ᛚ","м":"ᛗ","н":"ᚾ","о":"ᛟ","п":"ᛠ","р":"ᚱ","с":"ᛊ","т":"ᛏ","у":"ᚢ","ф":"ᚠ","х":"ᚻ","ц":"ᛃ","ч":"ᚳ","ш":"ᛘ","щ":"ᛘ","ъ":"ᛁ","ы":"ᚤ","ь":"ᛁ","э":"ᛖ","ю":"ᚣ","я":"ᛄ"," ":"  "};
+    const runes = ["ᛟ","ᚫ","ᛒ","ᚠ","ᚷ","ᛞ","ᛖ","ᛉ","ᛈ","ᛁ","ᚲ","ᛚ","ᛗ","ᚾ","ᚱ","ᛊ","ᛏ","ᚢ","ᚻ","ᛃ","ᚳ","ᛘ","ᛥ"];
 
+    function spawnRune() {
+        const container = document.getElementById('canvas-runes');
+        const rune = document.createElement('div');
+        rune.className = 'floating-rune';
+        rune.innerText = runes[Math.floor(Math.random() * runes.length)];
+        rune.style.left = (Math.random() * 92 + 2) + '%';
+        rune.style.top = (Math.random() * 92 + 2) + '%';
+        container.appendChild(rune);
+        setTimeout(() => rune.remove(), 8000);
+    }
+    setInterval(spawnRune, 2000);
+
+    const runeMap = {"а":"ᚫ","б":"ᛒ","в":"ᚠ","г":"ᚷ","д":"ᛞ","е":"ᛖ","ё":"ᛖ","ж":"ᛉ","з":"ᛈ","и":"ᛁ","й":"ᛁ","к":"ᚲ","л":"ᛚ","м":"ᛗ","н":"ᚾ","о":"ᛟ","п":"ᛠ","р":"ᚱ","с":"ᛊ","т":"ᛏ","у":"ᚢ","ф":"ᚠ","х":"ᚻ","ц":"ᛃ","ч":"ᚳ","ш":"ᛘ","щ":"ᛘ","ъ":"ᛁ","ы":"ᚤ","ь":"ᛁ","э":"ᛖ","ю":"ᚣ","я":"ᛄ"," ":"  "};
     function toRunes(text) { return text.toLowerCase().split('').map(char => runeMap[char] || char).join(''); }
 
     function toggleShadow() {
         document.body.classList.toggle('shadow-active');
-        const isActive = document.body.classList.contains('shadow-active');
-        document.getElementById('shadow-btn').innerText = isActive ? "ЗАКРЫТЬ ОЧИ" : "ОТКРЫТЬ ОЧИ";
+        document.getElementById('shadow-btn').innerText = document.body.classList.contains('shadow-active') ? "ЗАКРЫТЬ ОЧИ" : "ОТКРЫТЬ ОЧИ";
         document.querySelectorAll('.msg-content').forEach(span => {
             const original = span.getAttribute('data-original');
-            span.innerText = isActive ? toRunes(original) : original;
+            span.innerText = document.body.classList.contains('shadow-active') ? toRunes(original) : original;
         });
     }
 
     function addMsg(user, text) {
         const log = document.getElementById('log');
         const isMine = user === myName ? 'mine' : '';
-        const isActive = document.body.classList.contains('shadow-active');
-        const displayText = isActive ? toRunes(text) : text;
+        const displayText = document.body.classList.contains('shadow-active') ? toRunes(text) : text;
         const div = document.createElement('div');
         div.className = `entry ${isMine}`;
         div.innerHTML = `<b>${user}</b><span class="msg-content" data-original="${text}">${displayText}</span>`;
-        div.onmouseenter = () => { if(document.body.classList.contains('shadow-active')) div.querySelector('.msg-content').innerText = text; };
-        div.onmouseleave = () => { if(document.body.classList.contains('shadow-active')) div.querySelector('.msg-content').innerText = toRunes(text); };
         log.appendChild(div);
         log.scrollTop = log.scrollHeight;
+    }
+
+    function updatePresence() {
+        channel.presence.get((err, members) => {
+            if (!err) {
+                document.getElementById('online-count-num').innerText = members.length;
+                const list = document.getElementById('presence-users');
+                list.innerHTML = members.map(m => `<div class="presence-user">✧ ${m.clientId}</div>`).join('');
+            }
+        });
     }
 
     function send() {
@@ -170,18 +211,7 @@
     function updateProfile() {
         document.getElementById('dynamic-avatar').innerText = myName.charAt(0);
         document.getElementById('display-nick').innerText = myName;
-        document.getElementById('lvl-display').innerText = "Level " + Math.floor(myExp / 10);
-    }
-
-    function updatePresence() {
-        channel.presence.get((err, members) => { 
-            if (!err) {
-                document.getElementById('online-count-num').innerText = members.length;
-                const listContainer = document.getElementById('presence-users');
-                listContainer.innerHTML = "";
-                members.forEach(m => { listContainer.innerHTML += `<div style='padding:5px 0; font-size:13px; color:#8a7fb9;'>✧ ${m.clientId}</div>`; });
-            }
-        });
+        document.getElementById('lvl-display').innerText = "LEVEL " + Math.floor(myExp / 10);
     }
 
     function saveNewNick(v) { if(v.trim()){ localStorage.setItem('arcanum_nick', v.trim()); location.reload(); } }
@@ -198,7 +228,6 @@
     channel.presence.enter();
     
     document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
-    
     updateProfile(); 
     loadHistory(); 
 </script>
