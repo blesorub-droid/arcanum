@@ -6,7 +6,6 @@
     <title>ARCANUM — Чат Душ</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
-        /* Все стили остаются прежними, чтобы не нарушить идеальный дизайн */
         * { box-sizing: border-box; }
         body { 
             background: #050505; color: #d4af37; font-family: 'Georgia', serif; margin: 0; 
@@ -14,6 +13,7 @@
             background: radial-gradient(circle, #1a0a2a 0%, #050505 100%); overflow: hidden;
         }
 
+        /* МАГИЧЕСКИЙ РЕЖИМ */
         .shadow-active .msg-content {
             color: #d4af37 !important;
             letter-spacing: 3px;
@@ -28,6 +28,7 @@
             position: relative;
         }
 
+        /* ПАНЕЛЬ СЛЕВА */
         #side-panel {
             width: 300px; border-right: 1px solid #2a1a3a;
             display: flex; flex-direction: column; align-items: center;
@@ -43,15 +44,25 @@
         }
         #display-nick { font-size: 26px; letter-spacing: 3px; color: #d4af37; text-transform: uppercase; font-weight: bold; text-align: center; }
         
-        .side-btn {
+        /* КНОПКИ СЛЕВА */
+        .magic-btn {
             width: 100%; background: none; border: 1px solid #2a1a3a;
-            color: #8a7fb9; padding: 12px; cursor: pointer; font-size: 11px; text-transform: uppercase; transition: 0.3s;
+            color: #8a7fb9; padding: 12px; cursor: pointer; font-size: 11px; 
+            text-transform: uppercase; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px; position: relative; overflow: hidden;
         }
-        .side-btn:hover { border-color: #d4af37; color: #d4af37; }
+        .magic-btn:hover {
+            color: #fff; border-color: #bf00ff;
+            box-shadow: 0 0 20px rgba(191, 0, 255, 0.4);
+            transform: translateY(-2px);
+        }
         .back-btn { border: 1px solid #d4af37 !important; color: #d4af37 !important; font-weight: bold; }
+        .back-btn:hover { box-shadow: 0 0 20px rgba(212, 175, 55, 0.4) !important; }
 
+        /* ЧАТ AREA */
         #chat-area { flex-grow: 1; display: flex; flex-direction: column; background: #000; position: relative; overflow: hidden; }
 
+        /* НЕОНОВЫЕ РУНЫ */
         #canvas-runes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .floating-rune {
             position: absolute; color: transparent; font-size: 32px; user-select: none;
@@ -65,15 +76,25 @@
             100% { opacity: 0; transform: scale(1.1) rotate(5deg); }
         }
 
+        /* ШАПКА */
         #chat-header { 
             padding: 20px 30px; border-bottom: 1px solid #2a1a3a; 
             display: flex; justify-content: space-between; align-items: center; 
             background: rgba(10, 10, 20, 0.95); z-index: 10;
         }
         .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-item { color: #d4af37; text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; }
-        .nav-item:hover { text-shadow: 0 0 10px #d4af37; }
+        .nav-item { 
+            color: #d4af37; text-decoration: none; font-size: 13px; 
+            letter-spacing: 2px; text-transform: uppercase; transition: 0.3s;
+            padding: 5px 10px; border-radius: 10px; border: 1px solid transparent;
+        }
+        .nav-item:hover { 
+            border-color: #d4af37; 
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); 
+            text-shadow: 0 0 8px #d4af37;
+        }
 
+        /* СПИСОК ОНЛАЙН (ВОЗВРАЩЕНО) */
         .online-wrapper { position: relative; cursor: pointer; color: #8a7fb9; font-size: 13px; letter-spacing: 2px; }
         #online-count-num { color: #d4af37; font-size: 20px; font-weight: bold; margin-left: 5px; }
         .presence-list {
@@ -84,6 +105,7 @@
         .online-wrapper:hover .presence-list { display: block; }
         .presence-user { padding: 5px 0; color: #8a7fb9; font-size: 12px; border-bottom: 1px solid #2a1a3a; }
 
+        /* СООБЩЕНИЯ */
         #log { flex-grow: 1; overflow-y: auto; padding: 35px; display: flex; flex-direction: column; gap: 20px; z-index: 5; position: relative; }
         .entry { 
             background: rgba(15, 5, 25, 0.8); padding: 18px 25px; border-left: 2px solid #d4af37; 
@@ -93,10 +115,26 @@
         .entry.mine { align-self: flex-end; border-left: none; border-right: 2px solid #8a7fb9; background: rgba(30, 10, 50, 0.7); }
         .entry b { display: block; font-size: 12px; color: #9d4edd; margin-bottom: 8px; text-transform: uppercase; }
 
+        /* ИНПУТ И КНОПКА ИЗРЕЧЬ */
         #input-zone { padding: 30px; border-top: 1px solid #2a1a3a; background: #050505; z-index: 10; }
-        .input-row { display: flex; gap: 15px; }
-        input[type="text"]#user-msg { background: #000; border: 1px solid #2a1a3a; color: #d4af37; padding: 20px; flex-grow: 1; font-size: 18px; outline: none; border-radius: 6px; }
-        .send-btn { background: #d4af37; color: #000; border: none; padding: 0 40px; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 16px; }
+        .input-row { display: flex; gap: 20px; align-items: center; }
+        input[type="text"]#user-msg { 
+            background: rgba(0,0,0,0.5); border: 1px solid #2a1a3a; color: #d4af37; 
+            padding: 20px; flex-grow: 1; font-size: 18px; outline: none; border-radius: 30px; 
+            transition: 0.3s;
+        }
+
+        .send-btn-magic {
+            background: none; border: 2px solid #d4af37; color: #d4af37;
+            padding: 15px 40px; font-size: 14px; letter-spacing: 4px;
+            text-transform: uppercase; cursor: pointer; border-radius: 50px;
+            transition: 0.5s; font-weight: bold; position: relative;
+        }
+        .send-btn-magic:hover {
+            color: #fff; border-color: #bf00ff;
+            box-shadow: 0 0 30px rgba(191, 0, 255, 0.6);
+            transform: scale(1.05); text-shadow: 0 0 10px #fff;
+        }
     </style>
 </head>
 <body>
@@ -106,12 +144,11 @@
         <div class="avatar-circle" id="dynamic-avatar">?</div>
         <div id="display-nick">МАГ</div>
         <div id="lvl-display" style="color:#8a7fb9; font-size:12px; letter-spacing:3px;">LEVEL 0</div>
-        <input type="text" id="change-nick" placeholder="Имя мага..." style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:10px; font-size:12px; text-align:center; margin-top:10px;" onchange="saveNewNick(this.value)">
+        <input type="text" id="change-nick" placeholder="Имя..." style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:10px; font-size:12px; text-align:center; margin-top:10px; border-radius:10px;" onchange="saveNewNick(this.value)">
         
-        <button id="shadow-btn" class="side-btn" onclick="toggleShadow()" style="border-color:#d4af37; color:#d4af37; margin-top:10px;">ОБЛЕЧЬ В ТЕНЬ</button>
-        
-        <button class="side-btn" onclick="document.getElementById('log').innerHTML=''" style="margin-top:10px; color:#ff4d4d; border-color:#ff4d4d33;">ОЧИСТИТЬ</button>
-        <button class="side-btn back-btn" onclick="location.href='../index.html'" style="margin-top:auto;">ВЫЙТИ</button>
+        <button id="shadow-btn" class="magic-btn" onclick="toggleShadow()" style="margin-top:10px; border-color:#d4af37; color:#d4af37;">ОБЛЕЧЬ В ТЕНЬ</button>
+        <button class="magic-btn" onclick="document.getElementById('log').innerHTML=''" style="margin-top:10px; color:#ff4d4d; border-color:#ff4d4d33;">ОЧИСТИТЬ</button>
+        <button class="magic-btn back-btn" onclick="location.href='../index.html'" style="margin-top:auto;">ВЫЙТИ</button>
     </div>
     <div id="chat-area">
         <div id="canvas-runes"></div>
@@ -121,7 +158,7 @@
                 <span style="color:#2a1a3a">|</span>
                 <a href="ball.html" class="nav-item">● СФЕРА СУДЬБЫ</a>
                 <span style="color:#2a1a3a">|</span>
-                <a href="arcanum_radio.html" class="nav-item">● РАДИО ARCANUM</a>
+                <a href="arcanum_radio.html" class="nav-item">● РАДИО</a>
             </div>
             <div class="online-wrapper">
                 ● В СЕТИ: <span id="online-count-num">1</span>
@@ -134,8 +171,8 @@
         <div id="log"></div>
         <div id="input-zone">
             <div class="input-row">
-                <input type="text" id="user-msg" placeholder="Изречь мысли..." autocomplete="off">
-                <button class="send-btn" onclick="send()">ИЗРЕЧЬ</button>
+                <input type="text" id="user-msg" placeholder="Шепнуть мирозданию..." autocomplete="off">
+                <button class="send-btn-magic" onclick="send()">ИЗРЕЧЬ</button>
             </div>
         </div>
     </div>
@@ -147,7 +184,7 @@
     const ably = new Ably.Realtime({ key: 'FO1MkA.QBgrTg:OjC-PQMR4Coi4nxjLyFe84T8uKnxzl0lFkFfDPyfDYg', clientId: myName });
     const channel = ably.channels.get('arcanum_stream');
 
-    const runes = ["ᛟ","ᚫ","ᛒ","ᚠ","ᚷ","ᛞ","ᛖ","ᛉ","ᛈ","ᛁ","ᚲ","ᛚ","ᛗ","ᚾ","ᚱ","ᛊ","ᛏ","ᚢ","ᚻ","ᛃ","ᚳ","ᛘ","ᛥ"];
+    const runes = ["ᛟ","ᚫ","ᛒ","ᚠ","ᚷ","ᛞ","ᛖ","ᛉ","ᛈ","ᛁ","ᚲ","ᛚ","ᛗ","ᚚ","ᚱ","ᛊ","ᛏ","ᚢ","ᚻ","ᛃ","ᚳ","ᛘ","ᛥ"];
 
     function spawnRune() {
         const container = document.getElementById('canvas-runes');
@@ -161,31 +198,16 @@
     }
     setInterval(spawnRune, 2000);
 
-    const runeMap = {"а":"ᚫ","б":"ᛒ","в":"ᚠ","г":"ᚷ","д":"ᛞ","е":"ᛖ","ё":"ᛖ","ж":"ᛉ","з":"ᛈ","и":"ᛁ","й":"ᛁ","к":"ᚲ","л":"ᛚ","м":"ᛗ","н":"ᚾ","о":"ᛟ","п":"ᛠ","р":"ᚱ","с":"ᛊ","т":"ᛏ","у":"ᚢ","ф":"ᚠ","х":"ᚻ","ц":"ᛃ","ч":"ᚳ","ш":"ᛘ","щ":"ᛘ","ъ":"ᛁ","ы":"ᚤ","ь":"ᛁ","э":"ᛖ","ю":"ᚣ","я":"ᛄ"," ":"  "};
-    function toRunes(text) { return text.toLowerCase().split('').map(char => runeMap[char] || char).join(''); }
-
     function toggleShadow() {
         document.body.classList.toggle('shadow-active');
         const isActive = document.body.classList.contains('shadow-active');
-        
-        // ОБНОВЛЕННАЯ ЛОГИКА ТЕКСТА
         document.getElementById('shadow-btn').innerText = isActive ? "ПРОЯВИТЬ СУТЬ" : "ОБЛЕЧЬ В ТЕНЬ";
         
         document.querySelectorAll('.msg-content').forEach(span => {
             const original = span.getAttribute('data-original');
-            span.innerText = isActive ? toRunes(original) : original;
+            const runeMap = {"а":"ᚫ","б":"ᛒ","в":"ᚠ","г":"ᚷ","д":"ᛞ","е":"ᛖ","ё":"ᛖ","ж":"ᛉ","з":"ᛈ","и":"ᛁ","й":"ᛁ","к":"ᚲ","л":"ᛚ","м":"ᛗ","н":"ᚾ","о":"ᛟ","п":"ᛠ","р":"ᚱ","с":"ᛊ","т":"ᛏ","у":"ᚢ","ф":"ᚠ","х":"ᚻ","ц":"ᛃ","ч":"ᚳ","ш":"ᛘ","щ":"ᛘ","ъ":"ᛁ","ы":"ᚤ","ь":"ᛁ","э":"ᛖ","ю":"ᚣ","я":"ᛄ"," ":"  "};
+            span.innerText = isActive ? original.toLowerCase().split('').map(char => runeMap[char] || char).join('') : original;
         });
-    }
-
-    function addMsg(user, text) {
-        const log = document.getElementById('log');
-        const isMine = user === myName ? 'mine' : '';
-        const displayText = document.body.classList.contains('shadow-active') ? toRunes(text) : text;
-        const div = document.createElement('div');
-        div.className = `entry ${isMine}`;
-        div.innerHTML = `<b>${user}</b><span class="msg-content" data-original="${text}">${displayText}</span>`;
-        log.appendChild(div);
-        log.scrollTop = log.scrollHeight;
     }
 
     function updatePresence() {
@@ -196,6 +218,16 @@
                 list.innerHTML = members.map(m => `<div class="presence-user">✧ ${m.clientId}</div>`).join('');
             }
         });
+    }
+
+    function addMsg(user, text) {
+        const log = document.getElementById('log');
+        const isMine = user === myName ? 'mine' : '';
+        const div = document.createElement('div');
+        div.className = `entry ${isMine}`;
+        div.innerHTML = `<b>${user}</b><span class="msg-content" data-original="${text}">${text}</span>`;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
     }
 
     function send() {
@@ -225,7 +257,6 @@
     channel.presence.subscribe('enter', updatePresence);
     channel.presence.subscribe('leave', updatePresence);
     channel.presence.enter();
-    
     document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
     updateProfile(); 
     loadHistory(); 
