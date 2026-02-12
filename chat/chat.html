@@ -70,15 +70,15 @@
         .magic-btn:hover { color: #fff; border-color: #bf00ff; box-shadow: 0 0 20px rgba(191, 0, 255, 0.4); transform: translateY(-2px); }
         .back-btn { border: 1px solid #d4af37 !important; color: #d4af37 !important; font-weight: bold; }
 
-        /* ЗОНА ЧАТА С КАРТИНКОЙ */
+        /* ЗОНА ЧАТА С КАРТИНКОЙ И ЗАТЕМНЕНИЕМ */
         #chat-area { 
             flex-grow: 1; 
             display: flex; 
             flex-direction: column; 
             position: relative; 
             overflow: hidden; 
-            /* ТВОЯ КАРТИНКА ТУТ */
-            background-image: url('assets/img/fon.jpg.jpg');
+            /* Добавлен черный слой поверх картинки (0.6 — это 60% темноты) */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('assets/img/fon.jpg.jpg');
             background-size: cover;
             background-position: center;
         }
@@ -126,7 +126,7 @@
             gap: 20px; 
             z-index: 5; 
             position: relative;
-            background: rgba(0, 0, 0, 0.2); /* Легкое затемнение фона, чтобы руны были видны */
+            background: rgba(0, 0, 0, 0.2); 
         }
         .entry { 
             background: rgba(15, 5, 25, 0.7); 
@@ -136,7 +136,7 @@
             border-radius: 4px; 
             max-width: 80%; 
             font-size: 20px;
-            backdrop-filter: blur(8px); /* Размытие картинки под сообщением */
+            backdrop-filter: blur(8px); 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .entry.mine { align-self: flex-end; border-left: none; border-right: 2px solid #8a7fb9; background: rgba(30, 10, 50, 0.6); }
