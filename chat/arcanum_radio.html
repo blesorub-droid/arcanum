@@ -14,7 +14,6 @@
             --glass: rgba(255, 255, 255, 0.07);
         }
 
-        /* Убираем стандартный курсор и скролл */
         * { cursor: none; box-sizing: border-box; }
         body, html { 
             margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden; 
@@ -22,7 +21,6 @@
             display: flex; align-items: center; justify-content: center; 
         }
         
-        /* МАГИЧЕСКАЯ ИСКРА (КУРСОР) */
         #magic-cursor {
             position: fixed; width: 10px; height: 10px;
             background: #fff; border-radius: 50%;
@@ -32,16 +30,14 @@
             will-change: left, top;
         }
 
-        /* ФОН С АВТО-ПОДСТРОЙКОЙ */
         .magic-bg { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%), 
+            background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%), 
                         url('assets/img/radio-bg.jpg') no-repeat center center;
             background-size: cover;
             z-index: 1;
         }
 
-        /* ГЛАВНАЯ ПАНЕЛЬ */
         .astral-panel { 
             position: relative; z-index: 10; 
             width: 92vw; max-width: 1100px;
@@ -57,18 +53,32 @@
             align-items: center;
         }
 
+        /* КНОПКА ПОЛНОГО ЭКРАНА */
+        .fs-toggle {
+            position: absolute; top: 30px; right: 40px;
+            background: none; border: 1px solid rgba(255,255,255,0.1);
+            color: var(--magic-cyan); font-size: 20px;
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s; z-index: 100;
+        }
+        .fs-toggle:hover {
+            border-color: var(--magic-cyan);
+            box-shadow: 0 0 15px var(--magic-cyan);
+            background: rgba(0, 242, 255, 0.05);
+        }
+
         .header { text-align: center; }
         .header h1 { 
             font-size: clamp(24px, 5vh, 48px); color: #fff; margin: 0;
             letter-spacing: 12px; text-transform: uppercase;
             text-shadow: 0 0 25px var(--magic-cyan);
         }
-        .header p { color: var(--magic-cyan); font-size: 12px; letter-spacing: 4px; opacity: 0.6; margin: 10px 0; text-transform: uppercase; }
+        .header p { color: var(--magic-cyan); font-size: 11px; letter-spacing: 4px; opacity: 0.6; margin: 10px 0; text-transform: uppercase; }
 
-        /* ЦЕНТРАЛЬНАЯ СФЕРА (ДИСПЛЕЙ) */
         .orb-display { 
             position: relative;
-            width: 28vh; height: 28vh;
+            width: 26vh; height: 26vh;
             background: radial-gradient(circle, rgba(188, 19, 254, 0.15), transparent);
             border-radius: 50%; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
@@ -78,18 +88,17 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.02); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
 
         #cur-st { 
-            font-size: 16px; color: #fff; text-align: center;
+            font-size: 15px; color: #fff; text-align: center;
             padding: 0 15px; text-shadow: 0 0 15px var(--magic-cyan);
             font-family: 'Comfortaa', sans-serif;
             font-weight: bold; height: 40px; display: flex; align-items: center;
         }
 
-        /* ГРИД КРИСТАЛЛОВ */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
@@ -102,15 +111,14 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             padding: 20px 10px;
             border-radius: 15px 40px 15px 40px;
-            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            transition: 0.5s; 
             text-align: center;
         }
 
         .crystal-card:hover { 
             background: rgba(188, 19, 254, 0.1);
             border-color: var(--magic-cyan);
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0, 242, 255, 0.2);
+            transform: translateY(-5px);
         }
 
         .crystal-card.active {
@@ -119,40 +127,37 @@
             box-shadow: 0 0 30px var(--magic-purp);
         }
         
-        .st-name { color: #fff; font-size: 11px; margin-bottom: 15px; letter-spacing: 2px; opacity: 0.7; }
+        .st-name { color: #fff; font-size: 10px; margin-bottom: 12px; letter-spacing: 2px; opacity: 0.6; }
         
-        /* КНОПКИ-РУНЫ */
         .btns { display: flex; gap: 15px; justify-content: center; }
         .magic-btn { 
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); 
-            color: #fff; width: 45px; height: 45px; border-radius: 50%;
+            color: #fff; width: 42px; height: 42px; border-radius: 50%;
             transition: 0.3s; font-size: 18px;
             display: flex; align-items: center; justify-content: center;
         }
         .magic-btn:hover { 
             border-color: var(--magic-gold); color: var(--magic-gold);
             text-shadow: 0 0 15px var(--magic-gold);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
             transform: scale(1.1);
         }
 
-        /* ЭКВАЛАЙЗЕР */
-        .eq { display: flex; justify-content: center; gap: 5px; height: 35px; margin-top: 10px; }
+        .eq { display: flex; justify-content: center; gap: 5px; height: 30px; margin-top: 10px; }
         .bar { 
             width: 3px; background: var(--magic-cyan); height: 20%; 
             border-radius: 5px; transition: 0.15s;
-            box-shadow: 0 0 10px var(--magic-cyan);
+            box-shadow: 0 0 8px var(--magic-cyan);
         }
 
         .vol-slider-wrap { width: 100%; display: flex; justify-content: center; align-items: center; gap: 20px; }
-        input[type=range] { width: 250px; accent-color: var(--magic-cyan); }
+        input[type=range] { width: 200px; accent-color: var(--magic-cyan); }
 
         .back-link { 
             color: rgba(255,255,255,0.3); text-decoration: none;
             font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
             transition: 0.3s; padding: 10px;
         }
-        .back-link:hover { color: var(--magic-cyan); text-shadow: 0 0 10px var(--magic-cyan); }
+        .back-link:hover { color: var(--magic-cyan); }
 
     </style>
 </head>
@@ -161,6 +166,8 @@
     <div class="magic-bg"></div>
 
     <div class="astral-panel">
+        <button class="fs-toggle" onclick="toggleFullScreen()" title="Развернуть/Свернуть">⛶</button>
+
         <div class="header">
             <h1>AETHERIAL</h1>
             <p>Вибрации Древнего Эфира</p>
@@ -176,9 +183,9 @@
         </div>
 
         <div class="vol-slider-wrap">
-            <span style="font-size: 9px; color: var(--magic-cyan); letter-spacing: 2px;">ШЕПОТ</span>
+            <span style="font-size: 9px; color: var(--magic-cyan);">ШЕПОТ</span>
             <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
-            <span style="font-size: 9px; color: var(--magic-purp); letter-spacing: 2px;">РЕЗОНАНС</span>
+            <span style="font-size: 9px; color: var(--magic-purp);">РЕЗОНАНС</span>
         </div>
 
         <div class="grid">
@@ -195,12 +202,23 @@
     <audio id="audio-core"></audio>
 
     <script>
-        // ЛАЙТ-ВЕРСИЯ КУРСОРA (ПЛАВНАЯ)
+        // КУРСОР
         const cursor = document.getElementById('magic-cursor');
         document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
+
+        // ПОЛНЫЙ ЭКРАН
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
 
         const audio = document.getElementById('audio-core');
         const stLabel = document.getElementById('cur-st');
@@ -215,8 +233,6 @@
             audio.play().then(() => { 
                 stLabel.innerText = name; 
                 startV(); 
-            }).catch(e => {
-                stLabel.innerText = "ОШИБКА ПОТОКА";
             });
         }
 
