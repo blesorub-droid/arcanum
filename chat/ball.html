@@ -6,13 +6,27 @@
     <title>ARCANUM — Сфера Судьбы</title>
     <style>
         body {
-            background: #050505; color: #d4af37; font-family: 'Georgia', serif;
-            margin: 0; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; min-height: 100vh; overflow: hidden;
-            background: radial-gradient(circle, #1a0a2a 0%, #050505 100%);
+            background: #050505; 
+            color: #d4af37; 
+            font-family: 'Georgia', serif;
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center; 
+            min-height: 100vh; 
+            overflow: hidden;
+            /* ДОБАВЛЕННЫЙ ФОН */
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/img/ball-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
-        .container { text-align: center; }
+        .container { 
+            text-align: center; 
+            z-index: 10; /* Чтобы контент был поверх фона */
+        }
 
         /* САМ ШАР */
         .magic-ball {
@@ -52,13 +66,13 @@
             100% { transform: translate(0,0); }
         }
 
-        .title { font-size: 28px; letter-spacing: 5px; margin-bottom: 10px; text-transform: uppercase; }
-        .subtitle { color: #8a7fb9; font-size: 14px; margin-bottom: 30px; letter-spacing: 2px; }
+        .title { font-size: 28px; letter-spacing: 5px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 15px rgba(0,0,0,1); }
+        .subtitle { color: #8a7fb9; font-size: 14px; margin-bottom: 30px; letter-spacing: 2px; background: rgba(0,0,0,0.4); display: inline-block; padding: 2px 10px; border-radius: 5px; }
 
         .back-btn {
-            background: none; border: 1px solid #d4af37; color: #d4af37;
+            background: rgba(0,0,0,0.6); border: 1px solid #d4af37; color: #d4af37;
             padding: 15px 40px; cursor: pointer; text-transform: uppercase;
-            font-weight: bold; transition: 0.3s; letter-spacing: 2px;
+            font-weight: bold; transition: 0.3s; letter-spacing: 2px; border-radius: 5px;
         }
         .back-btn:hover { background: #d4af37; color: #000; box-shadow: 0 0 20px #d4af37; }
     </style>
@@ -98,17 +112,15 @@
         const ball = document.getElementById('ball');
         const text = document.getElementById('prediction');
         
-        // Начинаем тряску
         ball.classList.add('shake');
         text.style.opacity = "0";
 
         setTimeout(() => {
-            // Останавливаем тряску и показываем ответ
             ball.classList.remove('shake');
             const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
             text.innerText = randomAnswer;
             text.style.opacity = "1";
-        }, 1000); // 1 секунда тряски
+        }, 1000);
     }
 </script>
 </body>
