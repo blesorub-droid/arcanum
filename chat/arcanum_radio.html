@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARCANUM — Астральный Резонатор</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;700&family=Marcellus&display=swap');
@@ -10,143 +11,148 @@
             --magic-cyan: #00f2ff; 
             --magic-gold: #ffd700;
             --magic-purp: #bc13fe;
-            --glass: rgba(255, 255, 255, 0.05);
+            --glass: rgba(255, 255, 255, 0.07);
         }
 
+        /* Убираем стандартный курсор и скролл */
         * { cursor: none; box-sizing: border-box; }
-
         body, html { 
             margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden; 
-            background: #020205; font-family: 'Marcellus', serif; 
+            background: #000; font-family: 'Marcellus', serif; 
             display: flex; align-items: center; justify-content: center; 
         }
         
-        /* МАГИЧЕСКИЙ КУРСОР-ИСКРА */
+        /* МАГИЧЕСКАЯ ИСКРА (КУРСОР) */
         #magic-cursor {
-            position: fixed; width: 12px; height: 12px;
+            position: fixed; width: 10px; height: 10px;
             background: #fff; border-radius: 50%;
             pointer-events: none; z-index: 9999;
-            box-shadow: 0 0 10px #fff, 0 0 20px var(--magic-cyan), 0 0 40px var(--magic-purp);
-            transition: transform 0.1s ease-out;
+            box-shadow: 0 0 15px #fff, 0 0 25px var(--magic-cyan), 0 0 45px var(--magic-purp);
+            transform: translate(-50%, -50%);
+            will-change: left, top;
         }
 
-        /* ФОН С АДАПТАЦИЕЙ */
+        /* ФОН С АВТО-ПОДСТРОЙКОЙ */
         .magic-bg { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background-image: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%), url('assets/img/radio-bg.jpg');
-            background-size: cover; background-position: center;
-            z-index: 1; transform: scale(1.05); /* Легкий напуск для плавности */
+            background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%), 
+                        url('assets/img/radio-bg.jpg') no-repeat center center;
+            background-size: cover;
+            z-index: 1;
         }
 
-        /* ГЛАВНАЯ КОНСОЛЬ */
+        /* ГЛАВНАЯ ПАНЕЛЬ */
         .astral-panel { 
             position: relative; z-index: 10; 
-            width: 90vw; max-width: 1200px;
-            height: 85vh;
-            background: rgba(10, 10, 25, 0.4);
-            backdrop-filter: blur(20px);
+            width: 92vw; max-width: 1100px;
+            height: 88vh;
+            background: rgba(5, 5, 15, 0.5);
+            backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
+            border-radius: 50px;
             display: flex; flex-direction: column;
-            padding: 2vh 2vw;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5), inset 0 0 100px rgba(188, 19, 254, 0.1);
+            padding: 4vh 3vw;
+            box-shadow: 0 0 60px rgba(0,0,0,1), inset 0 0 100px rgba(188, 19, 254, 0.1);
             justify-content: space-between;
+            align-items: center;
         }
 
         .header { text-align: center; }
         .header h1 { 
-            font-size: clamp(1.5em, 4vh, 3em); color: #fff; margin: 0;
-            letter-spacing: 15px; text-transform: uppercase;
-            text-shadow: 0 0 20px var(--magic-cyan);
+            font-size: clamp(24px, 5vh, 48px); color: #fff; margin: 0;
+            letter-spacing: 12px; text-transform: uppercase;
+            text-shadow: 0 0 25px var(--magic-cyan);
         }
-        .header p { color: var(--magic-cyan); font-size: 0.9em; letter-spacing: 5px; opacity: 0.7; margin: 1vh 0; }
+        .header p { color: var(--magic-cyan); font-size: 12px; letter-spacing: 4px; opacity: 0.6; margin: 10px 0; text-transform: uppercase; }
 
-        /* ЦЕНТРАЛЬНЫЙ АРТЕФАКТ (ДИСПЛЕЙ) */
+        /* ЦЕНТРАЛЬНАЯ СФЕРА (ДИСПЛЕЙ) */
         .orb-display { 
-            position: relative; align-self: center;
-            width: 25vh; height: 25vh;
-            background: radial-gradient(circle, rgba(188, 19, 254, 0.2), transparent);
+            position: relative;
+            width: 28vh; height: 28vh;
+            background: radial-gradient(circle, rgba(188, 19, 254, 0.15), transparent);
             border-radius: 50%; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            border: 1px solid rgba(0, 242, 255, 0.3);
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1), inset 0 0 20px rgba(188, 19, 254, 0.2);
-            animation: float 4s infinite ease-in-out;
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.15);
+            animation: float 5s infinite ease-in-out;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.02); }
         }
 
         #cur-st { 
-            font-size: 1.2em; color: #fff; text-align: center;
-            padding: 0 10px; text-shadow: 0 0 10px var(--magic-cyan);
+            font-size: 16px; color: #fff; text-align: center;
+            padding: 0 15px; text-shadow: 0 0 15px var(--magic-cyan);
             font-family: 'Comfortaa', sans-serif;
+            font-weight: bold; height: 40px; display: flex; align-items: center;
         }
 
         /* ГРИД КРИСТАЛЛОВ */
         .grid { 
             display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 1.5vw; 
-            margin-top: 2vh;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+            gap: 20px; 
+            width: 100%;
         }
 
         .crystal-card { 
             background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2vh 1vw;
-            border-radius: 20px 0 20px 0; /* Необычная форма */
-            transition: 0.4s; text-align: center;
-            position: relative; overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px 10px;
+            border-radius: 15px 40px 15px 40px;
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            text-align: center;
         }
 
         .crystal-card:hover { 
-            background: rgba(0, 242, 255, 0.1);
+            background: rgba(188, 19, 254, 0.1);
             border-color: var(--magic-cyan);
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 242, 255, 0.2);
         }
 
         .crystal-card.active {
             border-color: var(--magic-purp);
-            background: rgba(188, 19, 254, 0.1);
-            box-shadow: 0 0 25px var(--magic-purp);
+            background: rgba(188, 19, 254, 0.15);
+            box-shadow: 0 0 30px var(--magic-purp);
         }
         
-        .st-name { color: #fff; font-size: 0.8em; margin-bottom: 2vh; letter-spacing: 2px; opacity: 0.8; }
+        .st-name { color: #fff; font-size: 11px; margin-bottom: 15px; letter-spacing: 2px; opacity: 0.7; }
         
         /* КНОПКИ-РУНЫ */
-        .btns { display: flex; gap: 10px; justify-content: center; }
+        .btns { display: flex; gap: 15px; justify-content: center; }
         .magic-btn { 
-            background: none; border: 1px solid rgba(255, 255, 255, 0.2); 
-            color: #fff; width: 40px; height: 40px; border-radius: 50%;
-            cursor: none; transition: 0.3s; font-size: 1em;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); 
+            color: #fff; width: 45px; height: 45px; border-radius: 50%;
+            transition: 0.3s; font-size: 18px;
             display: flex; align-items: center; justify-content: center;
         }
         .magic-btn:hover { 
             border-color: var(--magic-gold); color: var(--magic-gold);
-            text-shadow: 0 0 10px var(--magic-gold);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            text-shadow: 0 0 15px var(--magic-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            transform: scale(1.1);
         }
 
-        /* ЭКВАЛАЙЗЕР "ЗВЕЗДНЫЙ ДОЖДЬ" */
-        .eq { display: flex; justify-content: center; gap: 5px; height: 30px; margin-top: 15px; }
+        /* ЭКВАЛАЙЗЕР */
+        .eq { display: flex; justify-content: center; gap: 5px; height: 35px; margin-top: 10px; }
         .bar { 
             width: 3px; background: var(--magic-cyan); height: 20%; 
-            border-radius: 10px; transition: 0.1s;
+            border-radius: 5px; transition: 0.15s;
             box-shadow: 0 0 10px var(--magic-cyan);
         }
 
         .vol-slider-wrap { width: 100%; display: flex; justify-content: center; align-items: center; gap: 20px; }
-        input[type=range] { width: 200px; accent-color: var(--magic-cyan); }
+        input[type=range] { width: 250px; accent-color: var(--magic-cyan); }
 
         .back-link { 
-            text-align: center; color: rgba(255,255,255,0.4); text-decoration: none;
-            font-size: 0.7em; letter-spacing: 3px; text-transform: uppercase;
-            transition: 0.3s;
+            color: rgba(255,255,255,0.3); text-decoration: none;
+            font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+            transition: 0.3s; padding: 10px;
         }
-        .back-link:hover { color: var(--magic-cyan); }
+        .back-link:hover { color: var(--magic-cyan); text-shadow: 0 0 10px var(--magic-cyan); }
 
     </style>
 </head>
@@ -157,7 +163,7 @@
     <div class="astral-panel">
         <div class="header">
             <h1>AETHERIAL</h1>
-            <p>потоки вечности в твоих руках</p>
+            <p>Вибрации Древнего Эфира</p>
         </div>
 
         <div class="orb-display">
@@ -165,13 +171,14 @@
             <div class="eq" id="eq">
                 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
                 <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
             </div>
         </div>
 
         <div class="vol-slider-wrap">
-            <span style="font-size: 0.6em; color: var(--magic-cyan);">МИН</span>
+            <span style="font-size: 9px; color: var(--magic-cyan); letter-spacing: 2px;">ШЕПОТ</span>
             <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
-            <span style="font-size: 0.6em; color: var(--magic-purp);">МАКС</span>
+            <span style="font-size: 9px; color: var(--magic-purp); letter-spacing: 2px;">РЕЗОНАНС</span>
         </div>
 
         <div class="grid">
@@ -182,13 +189,13 @@
             <div class="crystal-card" id="c5"><div class="st-name">D&B CLASSIC</div><div class="btns"><button class="magic-btn" onclick="connect('https://radiorecord.hostingradio.ru/dc96.aacp', 'D&B CLASSIC', 'c5')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
         </div>
 
-        <a href="chat.html" class="back-link">Вернуться в чертоги разума</a>
+        <a href="chat.html" class="back-link">← Вернуться в Обитель</a>
     </div>
 
     <audio id="audio-core"></audio>
 
     <script>
-        // МАГИЧЕСКИЙ КУРСОР
+        // ЛАЙТ-ВЕРСИЯ КУРСОРA (ПЛАВНАЯ)
         const cursor = document.getElementById('magic-cursor');
         document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
@@ -203,12 +210,14 @@
         function connect(url, name, cardId) { 
             document.querySelectorAll('.crystal-card').forEach(c => c.classList.remove('active')); 
             document.getElementById(cardId).classList.add('active'); 
-            stLabel.innerText = "ПРИЗЫВ..."; 
+            stLabel.innerText = "ПРИЗЫВ ЭФИРА..."; 
             audio.src = url; audio.load(); 
             audio.play().then(() => { 
                 stLabel.innerText = name; 
                 startV(); 
-            }); 
+            }).catch(e => {
+                stLabel.innerText = "ОШИБКА ПОТОКА";
+            });
         }
 
         function stopAudio() { 
@@ -226,11 +235,14 @@
                 bars.forEach(b => { 
                     const h = (Math.random() * 80 + 20);
                     b.style.height = h + "%"; 
-                    b.style.background = h > 60 ? "var(--magic-purp)" : "var(--magic-cyan)";
+                    b.style.opacity = h / 100;
                 }); 
             }, 100); 
         }
-        function stopV() { clearInterval(vInt); bars.forEach(b => { b.style.height = "20%"; b.style.background = "var(--magic-cyan)"; }); }
+        function stopV() { 
+            clearInterval(vInt); 
+            bars.forEach(b => { b.style.height = "20%"; b.style.opacity = "0.3"; }); 
+        }
     </script>
 </body>
 </html>
