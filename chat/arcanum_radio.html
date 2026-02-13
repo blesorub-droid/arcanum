@@ -12,6 +12,7 @@
             --magic-gold: #ffd700;
             --magic-purp: #bc13fe;
             --glass: rgba(255, 255, 255, 0.07);
+            --panel-border-color: rgba(255, 255, 255, 0.1); /* Новая переменная */
         }
 
         * { cursor: none; box-sizing: border-box; }
@@ -44,16 +45,22 @@
             height: 88vh;
             background: rgba(5, 5, 15, 0.5);
             backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--panel-border-color); /* Используем переменную */
             border-radius: 50px;
             display: flex; flex-direction: column;
             padding: 4vh 3vw;
             box-shadow: 0 0 60px rgba(0,0,0,1), inset 0 0 100px rgba(188, 19, 254, 0.1);
             justify-content: space-between;
             align-items: center;
+            animation: border-flicker 4s infinite alternate ease-in-out; /* Анимация мерцания */
         }
 
-        /* КНОПКА ПОЛНОГО ЭКРАНА */
+        /* АНИМАЦИЯ МЕРЦАНИЯ РАМКИ */
+        @keyframes border-flicker {
+            0%, 100% { border-color: var(--panel-border-color); box-shadow: 0 0 60px rgba(0,0,0,1), inset 0 0 100px rgba(188, 19, 254, 0.1); }
+            50% { border-color: var(--magic-cyan); box-shadow: 0 0 80px rgba(0,0,0,1), inset 0 0 120px rgba(0, 242, 255, 0.15); }
+        }
+
         .fs-toggle {
             position: absolute; top: 30px; right: 40px;
             background: none; border: 1px solid rgba(255,255,255,0.1);
@@ -202,14 +209,12 @@
     <audio id="audio-core"></audio>
 
     <script>
-        // КУРСОР
         const cursor = document.getElementById('magic-cursor');
         document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
-        // ПОЛНЫЙ ЭКРАН
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
@@ -233,6 +238,8 @@
             audio.play().then(() => { 
                 stLabel.innerText = name; 
                 startV(); 
+            }).catch(e => {
+                stLabel.innerText = "ОШИБКА ПОТОКА";
             });
         }
 
