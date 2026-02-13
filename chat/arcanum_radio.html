@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCANUM — Астральный Резонатор</title>
+    <title>ARCANUM — ЭФИР</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;700&family=Marcellus&display=swap');
 
         :root { 
-            --magic-cyan: #00f2ff; 
-            --magic-gold: #ffd700;
+            --magic-color: #00f2ff; /* Базовый цвет, меняется ползунком */
             --magic-purp: #bc13fe;
-            --glass: rgba(10, 10, 25, 0.6);
+            --glass: rgba(10, 10, 25, 0.7);
+            --glow-intensity: 0.5; /* Яркость блика */
         }
 
         * { cursor: none; box-sizing: border-box; }
@@ -25,7 +25,7 @@
             position: fixed; width: 10px; height: 10px;
             background: #fff; border-radius: 50%;
             pointer-events: none; z-index: 9999;
-            box-shadow: 0 0 15px #fff, 0 0 25px var(--magic-cyan), 0 0 45px var(--magic-purp);
+            box-shadow: 0 0 15px #fff, 0 0 25px var(--magic-color);
             transform: translate(-50%, -50%);
             will-change: left, top;
         }
@@ -37,23 +37,22 @@
             background-size: cover; z-index: 1;
         }
 
-        /* КОНТЕЙНЕР ДЛЯ ЭФФЕКТА БЕГАЮЩЕГО СВЕТА */
+        /* КОНТЕЙНЕР СВЕТА */
         .astral-wrapper {
-            position: relative;
-            z-index: 10;
-            padding: 2px; /* Толщина светящейся линии */
-            border-radius: 50px;
-            overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 10;
+            padding: 2px; border-radius: 50px;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
 
-        /* САМА ЗМЕЙКА СВЕТА */
+        /* МЯГКИЙ БЕГАЮЩИЙ БЛИК */
         .astral-wrapper::before {
             content: '';
             position: absolute;
-            width: 150%; height: 150%;
-            background: conic-gradient(transparent, var(--magic-cyan), transparent 30%);
-            animation: rotate-magic 6s linear infinite;
+            width: 180%; height: 180%;
+            /* Цвет и прозрачность зависят от интенсивности */
+            background: conic-gradient(transparent, var(--magic-color), transparent 20%);
+            animation: rotate-magic 10s linear infinite;
+            opacity: var(--glow-intensity);
         }
 
         @keyframes rotate-magic {
@@ -63,88 +62,76 @@
 
         .astral-panel { 
             position: relative;
-            width: 92vw; max-width: 1100px;
-            height: 88vh;
+            width: 92vw; max-width: 1100px; height: 88vh;
             background: var(--glass);
             backdrop-filter: blur(25px);
-            border-radius: 48px; /* Чуть меньше враппера */
+            border-radius: 48px;
             display: flex; flex-direction: column;
-            padding: 4vh 3vw;
-            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
-            justify-content: space-between;
-            align-items: center;
+            padding: 3vh 3vw;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.9);
+            justify-content: space-between; align-items: center;
             z-index: 2;
         }
 
         .fs-toggle {
             position: absolute; top: 30px; right: 40px;
             background: none; border: 1px solid rgba(255,255,255,0.1);
-            color: var(--magic-cyan); font-size: 20px;
+            color: var(--magic-color); font-size: 20px;
             width: 40px; height: 40px; border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            transition: 0.3s; z-index: 100;
+            transition: 0.3s;
         }
 
         .header { text-align: center; }
         .header h1 { 
             font-size: clamp(24px, 5vh, 48px); color: #fff; margin: 0;
-            letter-spacing: 12px; text-transform: uppercase;
-            text-shadow: 0 0 25px var(--magic-cyan);
+            letter-spacing: 20px; text-transform: uppercase;
+            text-shadow: 0 0 20px var(--magic-color);
         }
-        .header p { color: var(--magic-cyan); font-size: 11px; letter-spacing: 4px; opacity: 0.6; margin: 10px 0; text-transform: uppercase; }
+        .header p { color: var(--magic-color); font-size: 10px; letter-spacing: 6px; opacity: 0.6; margin: 10px 0; text-transform: uppercase; }
 
         .orb-display { 
-            position: relative;
-            width: 26vh; height: 26vh;
-            background: radial-gradient(circle, rgba(188, 19, 254, 0.15), transparent);
+            position: relative; width: 24vh; height: 24vh;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05), transparent);
             border-radius: 50%; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            box-shadow: 0 0 40px rgba(0, 242, 255, 0.15);
-            animation: float 5s infinite ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: float 6s infinite ease-in-out;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        #cur-st { 
-            font-size: 15px; color: #fff; text-align: center; font-family: 'Comfortaa', sans-serif;
-            font-weight: bold; text-shadow: 0 0 15px var(--magic-cyan);
-        }
+        #cur-st { font-size: 15px; color: #fff; text-align: center; font-family: 'Comfortaa', sans-serif; text-shadow: 0 0 10px var(--magic-color); }
+
+        .controls-row { display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; }
+        
+        .slider-box { display: flex; align-items: center; gap: 15px; }
+        .slider-box label { font-size: 9px; color: #fff; letter-spacing: 2px; opacity: 0.5; width: 80px; text-align: right; }
+        
+        input[type=range] { width: 200px; accent-color: var(--magic-color); cursor: none; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px; width: 100%; }
 
         .crystal-card { 
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 20px 10px; border-radius: 15px 40px;
-            transition: 0.5s; text-align: center;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 10px; border-radius: 15px 40px; transition: 0.5s; text-align: center;
         }
 
-        .crystal-card:hover { background: rgba(188, 19, 254, 0.1); border-color: var(--magic-cyan); transform: translateY(-5px); }
-        .crystal-card.active { border-color: var(--magic-purp); box-shadow: 0 0 30px var(--magic-purp); }
+        .crystal-card:hover { border-color: var(--magic-color); background: rgba(255,255,255,0.05); }
+        .crystal-card.active { border-color: var(--magic-color); box-shadow: 0 0 20px var(--magic-color); }
         
-        .st-name { color: #fff; font-size: 10px; margin-bottom: 12px; letter-spacing: 2px; opacity: 0.6; }
+        .st-name { color: #fff; font-size: 10px; margin-bottom: 10px; letter-spacing: 2px; opacity: 0.5; }
         
-        .btns { display: flex; gap: 15px; justify-content: center; }
+        .btns { display: flex; gap: 12px; justify-content: center; }
         .magic-btn { 
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); 
-            color: #fff; width: 42px; height: 42px; border-radius: 50%;
-            transition: 0.3s; font-size: 18px;
-            display: flex; align-items: center; justify-content: center;
+            background: none; border: 1px solid rgba(255, 255, 255, 0.1); 
+            color: #fff; width: 38px; height: 38px; border-radius: 50%;
+            transition: 0.3s; font-size: 16px; display: flex; align-items: center; justify-content: center;
         }
-        .magic-btn:hover { border-color: var(--magic-gold); color: var(--magic-gold); transform: scale(1.1); }
+        .magic-btn:hover { border-color: var(--magic-color); color: var(--magic-color); transform: scale(1.1); }
 
-        .eq { display: flex; justify-content: center; gap: 5px; height: 30px; margin-top: 10px; }
-        .bar { width: 3px; background: var(--magic-cyan); height: 20%; border-radius: 5px; transition: 0.15s; }
-
-        .vol-slider-wrap { width: 100%; display: flex; justify-content: center; align-items: center; gap: 20px; }
-        input[type=range] { width: 200px; accent-color: var(--magic-cyan); }
-
-        .back-link { color: rgba(255,255,255,0.3); text-decoration: none; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; transition: 0.3s; padding: 10px; }
-        .back-link:hover { color: var(--magic-cyan); }
+        .back-link { color: rgba(255,255,255,0.2); text-decoration: none; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; transition: 0.3s; }
+        .back-link:hover { color: var(--magic-color); }
 
     </style>
 </head>
@@ -154,26 +141,26 @@
 
     <div class="astral-wrapper">
         <div class="astral-panel">
-            <button class="fs-toggle" onclick="toggleFullScreen()" title="Развернуть/Свернуть">⛶</button>
+            <button class="fs-toggle" onclick="toggleFullScreen()">⛶</button>
 
             <div class="header">
-                <h1>AETHERIAL</h1>
-                <p>Вибрации Древнего Эфира</p>
+                <h1>ЭФИР</h1>
+                <p>Голоса звездного неба</p>
             </div>
 
             <div class="orb-display">
-                <div id="cur-st">СФЕРА ТИШИНЫ</div>
-                <div class="eq" id="eq">
-                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                </div>
+                <div id="cur-st">ТИШИНА</div>
             </div>
 
-            <div class="vol-slider-wrap">
-                <span style="font-size: 9px; color: var(--magic-cyan);">ШЕПОТ</span>
-                <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
-                <span style="font-size: 9px; color: var(--magic-purp);">РЕЗОНАНС</span>
+            <div class="controls-row">
+                <div class="slider-box">
+                    <label>ГРОМКОСТЬ</label>
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
+                </div>
+                <div class="slider-box">
+                    <label>СИЯНИЕ</label>
+                    <input type="range" min="0" max="360" step="1" value="180" oninput="updateMagic(this.value)">
+                </div>
             </div>
 
             <div class="grid">
@@ -184,7 +171,7 @@
                 <div class="crystal-card" id="c5"><div class="st-name">D&B CLASSIC</div><div class="btns"><button class="magic-btn" onclick="connect('https://radiorecord.hostingradio.ru/dc96.aacp', 'D&B CLASSIC', 'c5')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
             </div>
 
-            <a href="chat.html" class="back-link">← Вернуться в Обитель</a>
+            <a href="chat.html" class="back-link">← В ОБИТЕЛЬ</a>
         </div>
     </div>
 
@@ -197,14 +184,20 @@
             cursor.style.top = e.clientY + 'px';
         });
 
+        // ФУНКЦИЯ УПРАВЛЕНИЯ МАГИЕЙ
+        function updateMagic(val) {
+            // Меняем цвет по кругу (HUE)
+            const color = `hsl(${val}, 100%, 50%)`;
+            document.documentElement.style.setProperty('--magic-color', color);
+            
+            // Немного меняем прозрачность блика в зависимости от положения (опционально)
+            const intensity = 0.3 + (val / 720); 
+            document.documentElement.style.setProperty('--glow-intensity', intensity);
+        }
+
         function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-            }
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
         }
 
         const audio = document.getElementById('audio-core');
@@ -214,31 +207,16 @@
         function connect(url, name, cardId) { 
             document.querySelectorAll('.crystal-card').forEach(c => c.classList.remove('active')); 
             document.getElementById(cardId).classList.add('active'); 
-            stLabel.innerText = "ПРИЗЫВ ЭФИРА..."; 
+            stLabel.innerText = "ПРИЗЫВ..."; 
             audio.src = url; audio.load(); 
-            audio.play().then(() => { stLabel.innerText = name; startV(); });
+            audio.play().then(() => { stLabel.innerText = name; });
         }
 
         function stopAudio() { 
             audio.pause(); 
-            stLabel.innerText = "СФЕРА ТИШИНЫ"; 
+            stLabel.innerText = "ТИШИНА"; 
             document.querySelectorAll('.crystal-card').forEach(c => c.classList.remove('active')); 
-            stopV(); 
         }
-
-        const bars = document.querySelectorAll('.bar'); 
-        let vInt;
-        function startV() { 
-            clearInterval(vInt); 
-            vInt = setInterval(() => { 
-                bars.forEach(b => { 
-                    const h = (Math.random() * 80 + 20);
-                    b.style.height = h + "%"; 
-                    b.style.opacity = h / 100;
-                }); 
-            }, 100); 
-        }
-        function stopV() { clearInterval(vInt); bars.forEach(b => { b.style.height = "20%"; b.style.opacity = "0.3"; }); }
     </script>
 </body>
 </html>
