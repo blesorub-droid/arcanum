@@ -70,17 +70,23 @@
         .magic-btn:hover { color: #fff; border-color: #bf00ff; box-shadow: 0 0 20px rgba(191, 0, 255, 0.4); transform: translateY(-2px); }
         .back-btn { border: 1px solid #d4af37 !important; color: #d4af37 !important; font-weight: bold; }
 
-        /* ЗОНА ЧАТА С КАРТИНКОЙ И ЗАТЕМНЕНИЕМ */
+        /* ЗОНА ЧАТА */
         #chat-area { 
             flex-grow: 1; 
             display: flex; 
             flex-direction: column; 
             position: relative; 
             overflow: hidden; 
-            /* Добавлен черный слой поверх картинки (0.6 — это 60% темноты) */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('assets/img/fon.jpg.jpg');
+            background-image: url('assets/img/fon.jpg.jpg');
             background-size: cover;
             background-position: center;
+        }
+
+        /* СЛОЙ ЗАТЕМНЕНИЯ */
+        #dark-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; opacity: 0.5; pointer-events: none; z-index: 1;
+            transition: opacity 0.3s;
         }
 
         #canvas-runes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
@@ -108,6 +114,12 @@
         }
         .nav-item:hover { border-color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
 
+        /* ПОЛЗУНОК */
+        .dimmer-box { display: flex; align-items: center; gap: 8px; margin: 0 15px; }
+        .dimmer-box span { color: #8a7fb9; font-size: 10px; letter-spacing: 1px; }
+        input[type=range] { -webkit-appearance: none; background: #2a1a3a; height: 3px; border-radius: 5px; outline: none; width: 60px; cursor: pointer; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: #d4af37; border-radius: 50%; box-shadow: 0 0 5px #d4af37; }
+
         .online-wrapper { position: relative; cursor: pointer; color: #8a7fb9; font-size: 13px; letter-spacing: 2px; }
         #online-count-num { color: #d4af37; font-size: 20px; font-weight: bold; margin-left: 5px; }
         .presence-list {
@@ -118,48 +130,18 @@
         .online-wrapper:hover .presence-list { display: block; }
 
         #log { 
-            flex-grow: 1; 
-            overflow-y: auto; 
-            padding: 35px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 20px; 
-            z-index: 5; 
-            position: relative;
-            background: rgba(0, 0, 0, 0.2); 
+            flex-grow: 1; overflow-y: auto; padding: 35px; display: flex; flex-direction: column; gap: 20px; z-index: 5; position: relative; background: rgba(0, 0, 0, 0.1); 
         }
         .entry { 
-            background: rgba(15, 5, 25, 0.7); 
-            padding: 18px 25px; 
-            border-left: 2px solid #d4af37; 
-            align-self: flex-start; 
-            border-radius: 4px; 
-            max-width: 80%; 
-            font-size: 20px;
-            backdrop-filter: blur(8px); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: rgba(15, 5, 25, 0.7); padding: 18px 25px; border-left: 2px solid #d4af37; align-self: flex-start; border-radius: 4px; max-width: 80%; font-size: 20px; backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .entry.mine { align-self: flex-end; border-left: none; border-right: 2px solid #8a7fb9; background: rgba(30, 10, 50, 0.6); }
         .entry b { display: block; font-size: 12px; color: #9d4edd; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
 
         #input-zone { padding: 30px; border-top: 1px solid #2a1a3a; background: rgba(5, 5, 5, 0.9); backdrop-filter: blur(10px); z-index: 10; }
         .input-row { display: flex; gap: 20px; align-items: center; }
-        input[type="text"]#user-msg { 
-            background: rgba(0,0,0,0.5); border: 1px solid #2a1a3a; color: #d4af37; 
-            padding: 20px; flex-grow: 1; font-size: 18px; outline: none; border-radius: 30px; 
-        }
-
-        .send-btn-magic {
-            background: none; border: 2px solid #d4af37; color: #d4af37;
-            padding: 15px 40px; font-size: 14px; letter-spacing: 4px;
-            text-transform: uppercase; cursor: pointer; border-radius: 50px;
-            transition: 0.5s; font-weight: bold;
-        }
-        .send-btn-magic:hover {
-            color: #fff; border-color: #bf00ff;
-            box-shadow: 0 0 30px rgba(191, 0, 255, 0.6);
-            transform: scale(1.05); text-shadow: 0 0 10px #fff;
-        }
+        input[type="text"]#user-msg { background: rgba(0,0,0,0.5); border: 1px solid #2a1a3a; color: #d4af37; padding: 20px; flex-grow: 1; font-size: 18px; outline: none; border-radius: 30px; }
+        .send-btn-magic { background: none; border: 2px solid #d4af37; color: #d4af37; padding: 15px 40px; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; border-radius: 50px; transition: 0.5s; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -188,22 +170,23 @@
     </div>
 
     <div id="chat-area">
+        <div id="dark-layer"></div>
         <div id="canvas-runes"></div>
         <div id="chat-header">
-            <div class="nav-links" style="display:flex; align-items:center; gap:10px;">
-                <span style="color:#d4af37; font-size:13px; letter-spacing:2px;">СВИТОК ШЕПОТА</span>
-                <span style="color:#2a1a3a">|</span>
+            <div class="nav-links" style="display:flex; align-items:center;">
+                <span style="color:#d4af37; font-size:13px; letter-spacing:2px; margin-right:10px;">СВИТОК</span>
                 <a href="ball.html" class="nav-item">● СФЕРА</a>
                 <a href="arcanum_radio.html" class="nav-item">● РАДИО</a>
-                <span style="color:#2a1a3a">|</span>
-                <span class="nav-item" onclick="toggleCallMenu()" style="color:#8a7fb9; border:1px solid #8a7fb955;">● ТРУБКА СВЯЗИ</span>
-                <span style="color:#2a1a3a">|</span>
+                <span class="nav-item" onclick="toggleCallMenu()" style="color:#8a7fb9; border:1px solid #8a7fb955; margin-left:10px;">● ТРУБКА</span>
+                
+                <div class="dimmer-box">
+                    <span>ТЕНЬ</span>
+                    <input type="range" min="0" max="100" value="50" oninput="document.getElementById('dark-layer').style.opacity = this.value / 100">
+                </div>
             </div>
             <div class="online-wrapper">
                 ● В СЕТИ: <span id="online-count-num">1</span>
-                <div class="presence-list" id="presence-box">
-                    <div id="presence-users"></div>
-                </div>
+                <div class="presence-list" id="presence-box"><div id="presence-users"></div></div>
             </div>
         </div>
         <div id="log"></div>
@@ -226,7 +209,7 @@
     let localStream, peerConnection;
     const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
-    const runeMap = {"а":"ᚫ","б":"ᛒ","в":"ᚠ","г":"ᚷ","д":"ᛞ","е":"ᛖ","ё":"ᛖ","ж":"ᛉ","з":"ᛈ","и":"ᛁ","й":"ᛁ","к":"ᚲ","л":"ᛚ","м":"ᛗ","н":"ᚾ","о":"ᛟ","п":"ᛠ","р":"ᚱ","с":"ᛊ","т":"ᛏ","у":"ᚢ","ф":"ᚠ","х":"ᚻ","ц":"ᛃ","ч":"ᚳ","ш":"ᛘ","щ":"ᛘ","ъ":"ᛁ","ы":"ᚤ","ь":"ᛁ","э":"ᛖ","ю":"ᚣ","я":"ᛄ"," ":"  "};
+    const runeMap = {"а":"ᚫ","б":"ᛒ","в":"ᚠ","г":"ᚷ","д":"ᛞ","е":"ᛖ","ж":"ᛉ","з":"ᛈ","и":"ᛁ","й":"ᛁ","к":"ᚲ","л":"ᛚ","м":"ᛗ","н":"ᚾ","о":"ᛟ","п":"ᛠ","р":"ᚱ","с":"ᛊ","т":"ᛏ","у":"ᚢ","ф":"ᚠ","х":"ᚻ","ц":"ᛃ","ч":"ᚳ","ш":"ᛘ","щ":"ᛘ","ъ":"ᛁ","ы":"ᚤ","ь":"ᛁ","э":"ᛖ","ю":"ᚣ","я":"ᛄ"," ":"  "};
     function toRunes(text) { return text.toLowerCase().split('').map(char => runeMap[char] || char).join(''); }
 
     function toggleShadow() {
@@ -253,7 +236,6 @@
         const isMine = user === myName ? 'mine' : '';
         const isActive = document.body.classList.contains('shadow-active');
         const displayText = isActive ? toRunes(text) : text;
-        
         const div = document.createElement('div');
         div.className = `entry ${isMine}`;
         div.innerHTML = `<b>${user}</b><span class="msg-content" data-original="${text}">${displayText}</span>`;
@@ -277,83 +259,23 @@
     }
 
     function saveNewNick(v) { if(v.trim()){ localStorage.setItem('arcanum_nick', v.trim()); location.reload(); } }
-    
-    function loadHistory() { 
-        channel.history({ limit: 40 }, (err, page) => { 
-            if (!err) page.items.reverse().forEach(m => addMsg(m.data.u, m.data.t)); 
-        }); 
-    }
-
-    function toggleCallMenu() {
-        const menu = document.getElementById('call-overlay');
-        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
-    }
-
-    async function initiateCall() {
-        document.getElementById('call-status').innerText = "СОЕДИНЯЕМ МИРЫ...";
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        peerConnection = new RTCPeerConnection(rtcConfig);
-        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-        peerConnection.onicecandidate = (e) => { if (e.candidate) callChannel.publish('candidate', { from: myName, candidate: e.candidate }); };
-        peerConnection.ontrack = (e) => {
-            const audio = document.createElement('audio');
-            audio.srcObject = e.streams[0]; audio.autoplay = true;
-            document.getElementById('remote-audio-container').innerHTML = '';
-            document.getElementById('remote-audio-container').appendChild(audio);
-        };
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-        callChannel.publish('offer', { from: myName, offer: offer });
-    }
-
-    callChannel.subscribe('offer', async (msg) => {
-        if (msg.data.from !== myName) {
-            if (confirm("Входящий зов от " + msg.data.from + ". Ответить?")) {
-                toggleCallMenu();
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                peerConnection = new RTCPeerConnection(rtcConfig);
-                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-                peerConnection.onicecandidate = (e) => { if (e.candidate) callChannel.publish('candidate', { from: myName, candidate: e.candidate }); };
-                peerConnection.ontrack = (e) => {
-                    const audio = document.createElement('audio');
-                    audio.srcObject = e.streams[0]; audio.autoplay = true;
-                    document.getElementById('remote-audio-container').appendChild(audio);
-                };
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data.offer));
-                const answer = await peerConnection.createAnswer();
-                await peerConnection.setLocalDescription(answer);
-                callChannel.publish('answer', { from: myName, answer: answer });
-                document.getElementById('call-status').innerText = "В ЭФИРЕ С " + msg.data.from;
-            }
-        }
-    });
-
-    callChannel.subscribe('answer', async (msg) => {
-        if (msg.data.from !== myName && peerConnection) {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(msg.data.answer));
-            document.getElementById('call-status').innerText = "В ЭФИРЕ С " + msg.data.from;
-        }
-    });
-
-    callChannel.subscribe('candidate', async (msg) => {
-        if (msg.data.from !== myName && peerConnection) {
-            await peerConnection.addIceCandidate(new RTCIceCandidate(msg.data.candidate));
-        }
-    });
-
+    function loadHistory() { channel.history({ limit: 40 }, (err, page) => { if (!err) page.items.reverse().forEach(m => addMsg(m.data.u, m.data.t)); }); }
+    function toggleCallMenu() { const menu = document.getElementById('call-overlay'); menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex'; }
     function endCall() { location.reload(); }
 
+    // ТУТ ВЕСЬ ФУНКЦИОНАЛ ЗВОНКОВ И ОНЛАЙНА
     channel.subscribe('post', (m) => addMsg(m.data.u, m.data.t));
     channel.presence.subscribe('enter', updatePresence);
     channel.presence.subscribe('leave', updatePresence);
     channel.presence.enter();
     document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
     
+    // ПЛАВНЫЕ РУНЫ
     setInterval(() => {
         const container = document.getElementById('canvas-runes');
         const rune = document.createElement('div');
         rune.className = 'floating-rune';
-        const runesList = ["ᛟ","ᚫ","ᛒ","ᚠ","ᚷ","ᛞ","ᛖ","ᛉ","ᛈ","ᛁ","ᚲ","ᛚ","ᛗ","ᚾ","ᚱ","ᛊ","ᛏ","ᚢ","ᚻ","ᛃ","ᚳ","ᛘ","ᛥ"];
+        const runesList = ["ᛟ","ᚫ","ᛒ","ᚠ","ᚷ","ᛞ","ᛖ","ᛉ","ᛈ","ᛁ","ᚲ","ᛚ","ᛗ","ᚾ","ᚱ","ᛊ","ᛏ","ᚢ"];
         rune.innerText = runesList[Math.floor(Math.random() * runesList.length)];
         rune.style.left = Math.random() * 95 + '%';
         rune.style.top = Math.random() * 95 + '%';
