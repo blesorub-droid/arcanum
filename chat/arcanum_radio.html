@@ -11,8 +11,7 @@
             --magic-cyan: #00f2ff; 
             --magic-gold: #ffd700;
             --magic-purp: #bc13fe;
-            --glass: rgba(255, 255, 255, 0.07);
-            --panel-border-color: rgba(255, 255, 255, 0.1); /* Новая переменная */
+            --glass: rgba(10, 10, 25, 0.6);
         }
 
         * { cursor: none; box-sizing: border-box; }
@@ -35,30 +34,46 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%), 
                         url('assets/img/radio-bg.jpg') no-repeat center center;
-            background-size: cover;
-            z-index: 1;
+            background-size: cover; z-index: 1;
+        }
+
+        /* КОНТЕЙНЕР ДЛЯ ЭФФЕКТА БЕГАЮЩЕГО СВЕТА */
+        .astral-wrapper {
+            position: relative;
+            z-index: 10;
+            padding: 2px; /* Толщина светящейся линии */
+            border-radius: 50px;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* САМА ЗМЕЙКА СВЕТА */
+        .astral-wrapper::before {
+            content: '';
+            position: absolute;
+            width: 150%; height: 150%;
+            background: conic-gradient(transparent, var(--magic-cyan), transparent 30%);
+            animation: rotate-magic 6s linear infinite;
+        }
+
+        @keyframes rotate-magic {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .astral-panel { 
-            position: relative; z-index: 10; 
+            position: relative;
             width: 92vw; max-width: 1100px;
             height: 88vh;
-            background: rgba(5, 5, 15, 0.5);
+            background: var(--glass);
             backdrop-filter: blur(25px);
-            border: 1px solid var(--panel-border-color); /* Используем переменную */
-            border-radius: 50px;
+            border-radius: 48px; /* Чуть меньше враппера */
             display: flex; flex-direction: column;
             padding: 4vh 3vw;
-            box-shadow: 0 0 60px rgba(0,0,0,1), inset 0 0 100px rgba(188, 19, 254, 0.1);
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
             justify-content: space-between;
             align-items: center;
-            animation: border-flicker 4s infinite alternate ease-in-out; /* Анимация мерцания */
-        }
-
-        /* АНИМАЦИЯ МЕРЦАНИЯ РАМКИ */
-        @keyframes border-flicker {
-            0%, 100% { border-color: var(--panel-border-color); box-shadow: 0 0 60px rgba(0,0,0,1), inset 0 0 100px rgba(188, 19, 254, 0.1); }
-            50% { border-color: var(--magic-cyan); box-shadow: 0 0 80px rgba(0,0,0,1), inset 0 0 120px rgba(0, 242, 255, 0.15); }
+            z-index: 2;
         }
 
         .fs-toggle {
@@ -68,11 +83,6 @@
             width: 40px; height: 40px; border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             transition: 0.3s; z-index: 100;
-        }
-        .fs-toggle:hover {
-            border-color: var(--magic-cyan);
-            box-shadow: 0 0 15px var(--magic-cyan);
-            background: rgba(0, 242, 255, 0.05);
         }
 
         .header { text-align: center; }
@@ -100,39 +110,21 @@
         }
 
         #cur-st { 
-            font-size: 15px; color: #fff; text-align: center;
-            padding: 0 15px; text-shadow: 0 0 15px var(--magic-cyan);
-            font-family: 'Comfortaa', sans-serif;
-            font-weight: bold; height: 40px; display: flex; align-items: center;
+            font-size: 15px; color: #fff; text-align: center; font-family: 'Comfortaa', sans-serif;
+            font-weight: bold; text-shadow: 0 0 15px var(--magic-cyan);
         }
 
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
-            gap: 20px; 
-            width: 100%;
-        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px; width: 100%; }
 
         .crystal-card { 
-            background: var(--glass);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 20px 10px;
-            border-radius: 15px 40px 15px 40px;
-            transition: 0.5s; 
-            text-align: center;
+            padding: 20px 10px; border-radius: 15px 40px;
+            transition: 0.5s; text-align: center;
         }
 
-        .crystal-card:hover { 
-            background: rgba(188, 19, 254, 0.1);
-            border-color: var(--magic-cyan);
-            transform: translateY(-5px);
-        }
-
-        .crystal-card.active {
-            border-color: var(--magic-purp);
-            background: rgba(188, 19, 254, 0.15);
-            box-shadow: 0 0 30px var(--magic-purp);
-        }
+        .crystal-card:hover { background: rgba(188, 19, 254, 0.1); border-color: var(--magic-cyan); transform: translateY(-5px); }
+        .crystal-card.active { border-color: var(--magic-purp); box-shadow: 0 0 30px var(--magic-purp); }
         
         .st-name { color: #fff; font-size: 10px; margin-bottom: 12px; letter-spacing: 2px; opacity: 0.6; }
         
@@ -143,27 +135,15 @@
             transition: 0.3s; font-size: 18px;
             display: flex; align-items: center; justify-content: center;
         }
-        .magic-btn:hover { 
-            border-color: var(--magic-gold); color: var(--magic-gold);
-            text-shadow: 0 0 15px var(--magic-gold);
-            transform: scale(1.1);
-        }
+        .magic-btn:hover { border-color: var(--magic-gold); color: var(--magic-gold); transform: scale(1.1); }
 
         .eq { display: flex; justify-content: center; gap: 5px; height: 30px; margin-top: 10px; }
-        .bar { 
-            width: 3px; background: var(--magic-cyan); height: 20%; 
-            border-radius: 5px; transition: 0.15s;
-            box-shadow: 0 0 8px var(--magic-cyan);
-        }
+        .bar { width: 3px; background: var(--magic-cyan); height: 20%; border-radius: 5px; transition: 0.15s; }
 
         .vol-slider-wrap { width: 100%; display: flex; justify-content: center; align-items: center; gap: 20px; }
         input[type=range] { width: 200px; accent-color: var(--magic-cyan); }
 
-        .back-link { 
-            color: rgba(255,255,255,0.3); text-decoration: none;
-            font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-            transition: 0.3s; padding: 10px;
-        }
+        .back-link { color: rgba(255,255,255,0.3); text-decoration: none; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; transition: 0.3s; padding: 10px; }
         .back-link:hover { color: var(--magic-cyan); }
 
     </style>
@@ -172,38 +152,40 @@
     <div id="magic-cursor"></div>
     <div class="magic-bg"></div>
 
-    <div class="astral-panel">
-        <button class="fs-toggle" onclick="toggleFullScreen()" title="Развернуть/Свернуть">⛶</button>
+    <div class="astral-wrapper">
+        <div class="astral-panel">
+            <button class="fs-toggle" onclick="toggleFullScreen()" title="Развернуть/Свернуть">⛶</button>
 
-        <div class="header">
-            <h1>AETHERIAL</h1>
-            <p>Вибрации Древнего Эфира</p>
-        </div>
-
-        <div class="orb-display">
-            <div id="cur-st">СФЕРА ТИШИНЫ</div>
-            <div class="eq" id="eq">
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="header">
+                <h1>AETHERIAL</h1>
+                <p>Вибрации Древнего Эфира</p>
             </div>
-        </div>
 
-        <div class="vol-slider-wrap">
-            <span style="font-size: 9px; color: var(--magic-cyan);">ШЕПОТ</span>
-            <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
-            <span style="font-size: 9px; color: var(--magic-purp);">РЕЗОНАНС</span>
-        </div>
+            <div class="orb-display">
+                <div id="cur-st">СФЕРА ТИШИНЫ</div>
+                <div class="eq" id="eq">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                </div>
+            </div>
 
-        <div class="grid">
-            <div class="crystal-card" id="c1"><div class="st-name">SYNTHWAVE</div><div class="btns"><button class="magic-btn" onclick="connect('https://stream.nightride.fm/nightride.m4a', 'SYNTHWAVE', 'c1')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
-            <div class="crystal-card" id="c2"><div class="st-name">CHILLOUT</div><div class="btns"><button class="magic-btn" onclick="connect('https://ice1.somafm.com/groovesalad-128-mp3', 'CHILLOUT', 'c2')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
-            <div class="crystal-card" id="c3"><div class="st-name">1.FM TRANCE</div><div class="btns"><button class="magic-btn" onclick="connect('https://strm112.1.fm/trance_mobile_mp3', '1.FM TRANCE', 'c3')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
-            <div class="crystal-card" id="c4"><div class="st-name">PIRATE ST.</div><div class="btns"><button class="magic-btn" onclick="connect('https://radiorecord.hostingradio.ru/ps96.aacp', 'PIRATE STATION', 'c4')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
-            <div class="crystal-card" id="c5"><div class="st-name">D&B CLASSIC</div><div class="btns"><button class="magic-btn" onclick="connect('https://radiorecord.hostingradio.ru/dc96.aacp', 'D&B CLASSIC', 'c5')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
-        </div>
+            <div class="vol-slider-wrap">
+                <span style="font-size: 9px; color: var(--magic-cyan);">ШЕПОТ</span>
+                <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
+                <span style="font-size: 9px; color: var(--magic-purp);">РЕЗОНАНС</span>
+            </div>
 
-        <a href="chat.html" class="back-link">← Вернуться в Обитель</a>
+            <div class="grid">
+                <div class="crystal-card" id="c1"><div class="st-name">SYNTHWAVE</div><div class="btns"><button class="magic-btn" onclick="connect('https://stream.nightride.fm/nightride.m4a', 'SYNTHWAVE', 'c1')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
+                <div class="crystal-card" id="c2"><div class="st-name">CHILLOUT</div><div class="btns"><button class="magic-btn" onclick="connect('https://ice1.somafm.com/groovesalad-128-mp3', 'CHILLOUT', 'c2')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
+                <div class="crystal-card" id="c3"><div class="st-name">1.FM TRANCE</div><div class="btns"><button class="magic-btn" onclick="connect('https://strm112.1.fm/trance_mobile_mp3', '1.FM TRANCE', 'c3')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
+                <div class="crystal-card" id="c4"><div class="st-name">PIRATE ST.</div><div class="btns"><button class="magic-btn" onclick="connect('https://radiorecord.hostingradio.ru/ps96.aacp', 'PIRATE STATION', 'c4')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
+                <div class="crystal-card" id="c5"><div class="st-name">D&B CLASSIC</div><div class="btns"><button class="magic-btn" onclick="connect('https://radiorecord.hostingradio.ru/dc96.aacp', 'D&B CLASSIC', 'c5')">✧</button><button class="magic-btn" onclick="stopAudio()">✦</button></div></div>
+            </div>
+
+            <a href="chat.html" class="back-link">← Вернуться в Обитель</a>
+        </div>
     </div>
 
     <audio id="audio-core"></audio>
@@ -227,7 +209,6 @@
 
         const audio = document.getElementById('audio-core');
         const stLabel = document.getElementById('cur-st');
-
         function setVolume(v) { audio.volume = v; }
         
         function connect(url, name, cardId) { 
@@ -235,12 +216,7 @@
             document.getElementById(cardId).classList.add('active'); 
             stLabel.innerText = "ПРИЗЫВ ЭФИРА..."; 
             audio.src = url; audio.load(); 
-            audio.play().then(() => { 
-                stLabel.innerText = name; 
-                startV(); 
-            }).catch(e => {
-                stLabel.innerText = "ОШИБКА ПОТОКА";
-            });
+            audio.play().then(() => { stLabel.innerText = name; startV(); });
         }
 
         function stopAudio() { 
@@ -262,10 +238,7 @@
                 }); 
             }, 100); 
         }
-        function stopV() { 
-            clearInterval(vInt); 
-            bars.forEach(b => { b.style.height = "20%"; b.style.opacity = "0.3"; }); 
-        }
+        function stopV() { clearInterval(vInt); bars.forEach(b => { b.style.height = "20%"; b.style.opacity = "0.3"; }); }
     </script>
 </body>
 </html>
