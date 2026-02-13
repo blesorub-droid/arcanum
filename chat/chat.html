@@ -39,6 +39,9 @@
             position: relative;
         }
 
+        /* МАГИЯ НА ВЕСЬ ЭКРАН */
+        #terminal:fullscreen { width: 100vw; height: 100vh; border: none; border-radius: 0; }
+
         /* ОКНО ЗВОНКА (OVERLAY) */
         #call-overlay {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
@@ -142,6 +145,13 @@
         .input-row { display: flex; gap: 20px; align-items: center; }
         input[type="text"]#user-msg { background: rgba(0,0,0,0.5); border: 1px solid #2a1a3a; color: #d4af37; padding: 20px; flex-grow: 1; font-size: 18px; outline: none; border-radius: 30px; }
         .send-btn-magic { background: none; border: 2px solid #d4af37; color: #d4af37; padding: 15px 40px; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; border-radius: 50px; transition: 0.5s; font-weight: bold; }
+        
+        /* ТА САМАЯ МАЛЮСЕНЬКАЯ ФИОЛЕТОВАЯ КНОПОЧКА */
+        .fs-toggle { 
+            width: 20px; height: 20px; background: #8a2be2; border: none; border-radius: 4px; 
+            cursor: pointer; opacity: 0.4; transition: 0.3s; flex-shrink: 0; 
+        }
+        .fs-toggle:hover { opacity: 1; box-shadow: 0 0 10px #8a2be2; }
     </style>
 </head>
 <body>
@@ -194,6 +204,7 @@
             <div class="input-row">
                 <input type="text" id="user-msg" placeholder="Шепнуть мирозданию..." autocomplete="off">
                 <button class="send-btn-magic" onclick="send()">ИЗРЕЧЬ</button>
+                <button class="fs-toggle" onclick="toggleFullScreen()"></button>
             </div>
         </div>
     </div>
@@ -204,10 +215,14 @@
     let myExp = parseInt(localStorage.getItem('arcanum_exp')) || 0;
     const ably = new Ably.Realtime({ key: 'FO1MkA.QBgrTg:OjC-PQMR4Coi4nxjLyFe84T8uKnxzl0lFkFfDPyfDYg', clientId: myName });
     const channel = ably.channels.get('arcanum_stream');
-    const callChannel = ably.channels.get('arcanum_calls');
 
-    let localStream, peerConnection;
-    const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.getElementById('terminal').requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    }
 
     const runeMap = {"а":"ᚫ","б":"ᛒ","в":"ᚠ","г":"ᚷ","д":"ᛞ","е":"ᛖ","ж":"ᛉ","з":"ᛈ","и":"ᛁ","й":"ᛁ","к":"ᚲ","л":"ᛚ","м":"ᛗ","н":"ᚾ","о":"ᛟ","п":"ᛠ","р":"ᚱ","с":"ᛊ","т":"ᛏ","у":"ᚢ","ф":"ᚠ","х":"ᚻ","ц":"ᛃ","ч":"ᚳ","ш":"ᛘ","щ":"ᛘ","ъ":"ᛁ","ы":"ᚤ","ь":"ᛁ","э":"ᛖ","ю":"ᚣ","я":"ᛄ"," ":"  "};
     function toRunes(text) { return text.toLowerCase().split('').map(char => runeMap[char] || char).join(''); }
@@ -263,14 +278,12 @@
     function toggleCallMenu() { const menu = document.getElementById('call-overlay'); menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex'; }
     function endCall() { location.reload(); }
 
-    // ТУТ ВЕСЬ ФУНКЦИОНАЛ ЗВОНКОВ И ОНЛАЙНА
     channel.subscribe('post', (m) => addMsg(m.data.u, m.data.t));
     channel.presence.subscribe('enter', updatePresence);
     channel.presence.subscribe('leave', updatePresence);
     channel.presence.enter();
     document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
     
-    // ПЛАВНЫЕ РУНЫ
     setInterval(() => {
         const container = document.getElementById('canvas-runes');
         const rune = document.createElement('div');
