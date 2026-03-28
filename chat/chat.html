@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARCANUM — SELENA VOICE</title>
+    <title>ARCANUM — SELENA CORE</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         * { box-sizing: border-box; }
@@ -20,18 +20,17 @@
             position: relative;
         }
 
-        /* БОКОВАЯ ПАНЕЛЬ */
         #side-panel {
             width: 300px; border-right: 1px solid #2a1a3a;
             display: flex; flex-direction: column; align-items: center;
             padding: 40px 20px; background: rgba(15, 10, 25, 0.9); gap: 15px; z-index: 20;
         }
+
         .rune-glow { 
             font-size: 50px; color: #d4af37; text-shadow: 0 0 20px #d4af37; 
             animation: blink 4s infinite; cursor: pointer; transition: 0.3s;
         }
         .selena-active { color: #00f2ff !important; text-shadow: 0 0 30px #00f2ff !important; animation: pulse-cyan 1.5s infinite !important; }
-        
         @keyframes pulse-cyan { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); opacity: 0.7; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
@@ -47,8 +46,7 @@
             text-transform: uppercase; border-radius: 20px; transition: 0.4s;
         }
 
-        /* ЗОНА ЧАТА */
-        #chat-area { flex-grow: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; background: url('assets/img/fon.jpg.jpg') center/cover; }
+        #chat-area { flex-grow: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
         #dark-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0.5; pointer-events: none; z-index: 1; transition: 0.3s; }
         
         #chat-header { 
@@ -56,52 +54,42 @@
             display: flex; justify-content: space-between; align-items: center; 
             background: rgba(10, 10, 20, 0.8); backdrop-filter: blur(10px); z-index: 10;
         }
-        .nav-item { color: #d4af37; text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; margin: 0 10px; cursor: pointer; }
+        .nav-item { color: #d4af37; text-decoration: none; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin: 0 10px; }
 
         #log { flex-grow: 1; overflow-y: auto; padding: 35px; display: flex; flex-direction: column; gap: 20px; z-index: 5; }
-        .entry { background: rgba(15, 5, 25, 0.7); padding: 15px 20px; border-left: 2px solid #d4af37; align-self: flex-start; border-radius: 4px; max-width: 80%; font-size: 20px; backdrop-filter: blur(8px); }
+        .entry { background: rgba(15, 5, 25, 0.7); padding: 15px 20px; border-left: 2px solid #d4af37; align-self: flex-start; border-radius: 4px; max-width: 80%; font-size: 19px; }
         .entry.mine { align-self: flex-end; border-left: none; border-right: 2px solid #8a7fb9; background: rgba(30, 10, 50, 0.6); }
 
         #input-zone { padding: 30px; border-top: 1px solid #2a1a3a; background: rgba(5, 5, 5, 0.9); z-index: 10; }
-        .input-row { display: flex; gap: 20px; }
-        input[type="text"]#user-msg { background: rgba(0,0,0,0.5); border: 1px solid #2a1a3a; color: #d4af37; padding: 15px 25px; flex-grow: 1; font-size: 18px; outline: none; border-radius: 30px; }
-        .send-btn-magic { background: none; border: 2px solid #d4af37; color: #d4af37; padding: 10px 30px; cursor: pointer; border-radius: 50px; font-weight: bold; }
+        input[type="text"] { background: rgba(0,0,0,0.5); border: 1px solid #2a1a3a; color: #d4af37; padding: 15px 25px; flex-grow: 1; font-size: 18px; outline: none; border-radius: 30px; width: 80%; }
+        .send-btn-magic { background: none; border: 2px solid #d4af37; color: #d4af37; padding: 12px 30px; cursor: pointer; border-radius: 50px; font-weight: bold; margin-left: 15px; }
     </style>
 </head>
 <body>
 
 <div id="terminal">
     <div id="side-panel">
-        <div class="rune-glow" id="selena-trigger" title="Селена: Активировать голос">ᛟ</div>
+        <div class="rune-glow" id="selena-trigger">ᛟ</div>
         <div class="avatar-circle" id="dynamic-avatar">?</div>
-        <div id="display-nick" style="font-size: 22px; letter-spacing: 3px;">МАГ</div>
-        <div id="lvl-display" style="color:#8a7fb9; font-size:12px;">LEVEL 0</div>
-        
-        <button class="magic-btn" onclick="document.body.classList.toggle('shadow-active')">ОБЛЕЧЬ В ТЕНЬ</button>
-        <button class="magic-btn" onclick="document.getElementById('log').innerHTML=''" style="color:#ff4d4d;">ОЧИСТИТЬ</button>
-        <button class="magic-btn" onclick="location.reload()" style="margin-top:auto; border-color:#d4af37;">РЕСТАРТ</button>
+        <div id="display-nick">ZHEKOSS</div>
+        <div id="lvl-display" style="color:#8a7fb9; font-size:11px;">LVL 99 ARCHMAGE</div>
+        <button class="magic-btn" onclick="document.getElementById('log').innerHTML=''">ОЧИСТИТЬ СВИТОК</button>
+        <button class="magic-btn" onclick="location.reload()" style="margin-top:auto;">РЕСТАРТ</button>
     </div>
 
     <div id="chat-area">
         <div id="dark-layer"></div>
         <div id="chat-header">
             <div>
-                <a href="ball.html" class="nav-item">● СФЕРА</a>
-                <a href="arcanum_radio.html" class="nav-item">● РАДИО</a>
+                <a href="ball.html" class="nav-item">СФЕРА</a>
+                <a href="radio.html" class="nav-item">РАДИО</a>
             </div>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span style="font-size:10px; color:#8a7fb9;">ТЕНЬ</span>
-                <input type="range" min="0" max="100" value="50" oninput="document.getElementById('dark-layer').style.opacity = this.value / 100">
-            </div>
+            <input type="range" min="0" max="100" value="50" oninput="document.getElementById('dark-layer').style.opacity = this.value / 100">
         </div>
-
         <div id="log"></div>
-
         <div id="input-zone">
-            <div class="input-row">
-                <input type="text" id="user-msg" placeholder="Шепни Селене..." autocomplete="off">
-                <button class="send-btn-magic" onclick="send()">ИЗРЕЧЬ</button>
-            </div>
+            <input type="text" id="user-msg" placeholder="Шепни Селене..." autocomplete="off">
+            <button class="send-btn-magic" onclick="send()">ИЗРЕЧЬ</button>
         </div>
     </div>
 </div>
@@ -111,7 +99,7 @@
     const ably = new Ably.Realtime({ key: 'FO1MkA.QBgrTg:OjC-PQMR4Coi4nxjLyFe84T8uKnxzl0lFkFfDPyfDYg', clientId: myName });
     const channel = ably.channels.get('arcanum_stream');
 
-    // === ЛОГИКА СЕЛЕНЫ (ОСНОВА v13.8) ===
+    // === ВШИТАЯ ЛОГИКА v13.8 ===
     let recognition = null;
     window.isStopManual = false;
     window.isPaused = false;
@@ -123,7 +111,7 @@
         this.classList.add('selena-active');
     };
 
-    function startSelenaVoice(element) {
+    function startSelena(element) {
         const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (recognition) { try { recognition.stop(); } catch(e) {} }
         
@@ -139,7 +127,6 @@
             let text = event.results[event.resultIndex][0].transcript.trim();
             let lowText = text.toLowerCase();
 
-            // ОБНОВЛЕННЫЕ КОМАНДЫ
             if (lowText.includes("стоп") || lowText.includes("замри")) { 
                 window.isStopManual = true; 
                 document.getElementById('selena-trigger').classList.remove('selena-active');
@@ -147,20 +134,11 @@
             }
             if (lowText.includes("пауза")) { window.isPaused = true; return; }
             if (lowText.includes("работай")) { window.isPaused = false; return; }
-            
-            // ГЛАВНАЯ КОМАНДА ОТПРАВКИ
-            if (lowText.includes("селена") && (lowText.includes("отправ") || lowText.includes("изреки"))) { 
-                send(); return; 
-            }
-            
+            if (lowText.includes("селена") && (lowText.includes("отправ") || lowText.includes("изреки"))) { send(); return; }
             if (lowText.includes("стирай") && lowText.includes("всё")) { element.value = ''; return; }
 
             if (!window.isPaused) {
-                const emojiMap = { 
-                    "точка": ". ", "запятая": ", ", "восклик": "! ", "ура": "! ", 
-                    "знак": "! ", "вопрос": "? ", "абзац": "\n", "лайк": "👍 ", 
-                    "смайл": "😊 ", "огонь": "🔥 " 
-                };
+                const emojiMap = { "точка": ". ", "запятая": ", ", "восклик": "! ", "ура": "! ", "знак": "! ", "вопрос": "? ", "абзац": "\n", "лайк": "👍 ", "смайл": "😊 ", "огонь": "🔥 " };
                 const val = emojiMap[lowText] || (text + " ");
                 const start = element.selectionStart;
                 element.value = element.value.substring(0, start) + val + element.value.substring(element.selectionEnd);
@@ -174,16 +152,16 @@
 
     document.addEventListener('mousedown', (e) => { 
         if (document.body.style.cursor === "crosshair") { 
-            const el = e.target.closest('input, textarea'); 
+            const el = e.target.closest('input'); 
             if (el) { 
                 e.preventDefault(); 
                 document.body.style.cursor = "default"; 
-                startSelenaVoice(el); 
+                startSelena(el); 
             } 
         } 
     }, true);
 
-    // === ЧАТ ===
+    // === СИСТЕМА ЧАТА ===
     function send() {
         const inp = document.getElementById('user-msg');
         if (inp.value.trim()) { 
@@ -204,13 +182,7 @@
 
     channel.subscribe('post', (m) => addMsg(m.data.u, m.data.t));
     document.getElementById('user-msg').onkeypress = (e) => { if(e.keyCode == 13) send(); };
-    
     document.getElementById('dynamic-avatar').innerText = myName.charAt(0);
-    document.getElementById('display-nick').innerText = myName;
-
-    channel.history({ limit: 10 }, (err, page) => { 
-        if (!err) page.items.reverse().forEach(m => addMsg(m.data.u, m.data.t)); 
-    });
 </script>
 </body>
 </html>
