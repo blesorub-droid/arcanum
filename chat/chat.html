@@ -30,7 +30,6 @@
         #dark-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; opacity: 0.5; pointer-events: none; z-index: 1; transition: opacity 0.3s; }
         #canvas-runes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
         .floating-rune { position: absolute; color: transparent; font-size: 32px; user-select: none; -webkit-text-stroke: 1px #8a2be2; filter: drop-shadow(0 0 2px #8a2be2); animation: runeFade 8s forwards ease-in-out; }
-        @keyframes runeFade { 0% { opacity: 0; transform: scale(0.8) rotate(-5deg); } 20% { opacity: 0.4; transform: scale(1) rotate(0deg); } 80% { opacity: 0.4; } 100% { opacity: 0; transform: scale(1.1) rotate(5deg); } }
         #chat-header { padding: 20px 30px; border-bottom: 1px solid #2a1a3a; display: flex; justify-content: space-between; align-items: center; background: rgba(10, 10, 20, 0.8); backdrop-filter: blur(10px); z-index: 10; }
         .nav-item { color: #d4af37; text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; padding: 5px 10px; border-radius: 10px; border: 1px solid transparent; cursor: pointer; }
         .nav-item:hover { border-color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
@@ -196,14 +195,16 @@
             setTimeout(() => rune.remove(), 8000);
         }, 2000);
 
-        // === СЕЛЕНА LOGIC v14.1 (STRICT) ===
+        // === СЕЛЕНА LOGIC v14.2 (FIXED) ===
         let recognition = null;
         window.isStopManual = false;
+        window.isPaused = false;
         const trigger = document.getElementById('selena-trigger');
         
         if (trigger) {
             trigger.onclick = function() {
                 window.isStopManual = false;
+                window.isPaused = false;
                 document.body.style.cursor = "crosshair"; 
                 this.classList.add('selena-active');
             };
@@ -222,45 +223,49 @@
             recognition.onresult = (event) => {
                 if (!event.results[event.resultIndex].isFinal) return;
                 let text = event.results[event.resultIndex][0].transcript.trim();
-                let lowText = text.toLowerCase();
+                let low = text.toLowerCase();
 
-                // 1. КОМАНДА СТОП / ЗАМРИ
-                if (lowText === "стоп" || lowText === "замри") { 
+                // 1. КОМАНДА ВЫХОДА (СТОП/ЗАМРИ)
+                if (low.includes("стоп") || low.includes("замри")) { 
                     window.isStopManual = true; 
                     trigger.classList.remove('selena-active');
                     document.body.style.cursor = "default";
-                    recognition.stop(); return; 
-                }
-
-                // 2. СТИРАЙ ВСЕ
-                if (lowText === "стирай всё" || lowText === "стирай все") { 
-                    element.value = ''; return; 
-                }
-
-                // 3. АБЗАЦ
-                if (lowText === "абзац") { 
-                    element.value += "\n"; return; 
-                }
-
-                // 4. СЕЛЕНА ОТПРАВИТЬ / ИЗРЕЧЬ
-                const hasSelena = lowText.includes("селена");
-                const hasSend = lowText.includes("отправить") || lowText.includes("изречь");
-                
-                if (hasSelena && hasSend) {
-                    window.send(); 
+                    recognition.stop(); 
                     return; 
                 }
 
-                // 5. ТЕКСТ (Убираем "селена" из печати, если оно там проскочило)
-                let cleanText = text.replace(/селена/gi, '').trim();
-                if (!cleanText) return;
+                // 2. ПАУЗА / РАБОТАЙ
+                if (low.includes("пауза")) { window.isPaused = true; return; }
+                if (low.includes("работай")) { window.isPaused = false; return; }
 
-                const emojiMap = { "точка": ". ", "запятая": ", ", "восклик": "! ", "вопрос": "? ", "лайк": "👍 ", "смайл": "😊 " };
-                const val = emojiMap[lowText] || (cleanText + " ");
-                element.value += val;
+                // 3. ОТПРАВКА (СЕЛЕНА + ОТПРАВЬ/ИЗРЕКИ)
+                if (low.includes("селена") && (low.includes("отправ") || low.includes("изречь"))) {
+                    window.send(); return; 
+                }
+
+                // 4. СТИРАНИЕ (СТИРАЙ ВСЕ)
+                if (low.includes("стирай всё") || low.includes("стирай все")) { 
+                    element.value = ''; return; 
+                }
+
+                // 5. ТЕКСТ (если не пауза)
+                if (!window.isPaused) {
+                    if (low === "абзац") { element.value += "\n"; return; }
+                    
+                    const emojiMap = { "точка": ". ", "запятая": ", ", "восклик": "! ", "вопрос": "? ", "лайк": "👍 ", "смайл": "😊 " };
+                    let clean = text.replace(/селена/gi, '').trim();
+                    if (!clean && !emojiMap[low]) return;
+
+                    let finalAdd = emojiMap[low] || (clean + " ");
+                    element.value += finalAdd;
+                }
             };
 
-            recognition.onend = () => { if (!window.isStopManual) try { recognition.start(); } catch(e) {} };
+            recognition.onend = () => { 
+                if (!window.isStopManual) {
+                    setTimeout(() => { try { recognition.start(); } catch(e) {} }, 100);
+                }
+            };
             recognition.start();
         };
 
