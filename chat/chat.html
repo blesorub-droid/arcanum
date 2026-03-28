@@ -7,8 +7,6 @@
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
         * { box-sizing: border-box; }
-        
-        /* СТАБИЛЬНЫЙ МАГИЧЕСКИЙ СКРОЛЛ */
         #log::-webkit-scrollbar { width: 8px; }
         #log::-webkit-scrollbar-track { background: transparent; }
         #log::-webkit-scrollbar-thumb {
@@ -38,32 +36,27 @@
             box-shadow: 0 0 60px rgba(138, 43, 226, 0.2); border-radius: 12px; overflow: hidden;
             position: relative;
         }
-
         #terminal:fullscreen { width: 100vw; height: 100vh; border: none; border-radius: 0; }
 
-        /* ОКНО ЗВОНКА (OVERLAY) */
         #call-overlay {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(5,5,10,0.98); z-index: 100; flex-direction: column; 
             align-items: center; justify-content: center; backdrop-filter: blur(20px);
         }
 
-        /* ПАНЕЛЬ СЛЕВА */
         #side-panel {
             width: 300px; border-right: 1px solid #2a1a3a;
             display: flex; flex-direction: column; align-items: center;
             padding: 40px 20px; 
             background: rgba(15, 10, 25, 0.9); 
             background-image: url('assets/img/side-bg.jpg'); 
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
             gap: 15px; z-index: 20;
         }
         .rune-glow { 
             font-size: 50px; color: #d4af37; text-shadow: 0 0 20px #d4af37; 
             animation: blink 4s infinite; cursor: pointer; transition: 0.3s;
         }
-        /* Стиль для активной Селены */
         .selena-active { color: #bf00ff !important; text-shadow: 0 0 30px #bf00ff !important; animation: pulse-purple 1.5s infinite !important; }
         @keyframes pulse-purple { 0% { opacity: 1; } 50% { opacity: 0.5; transform: scale(1.1); } 100% { opacity: 1; } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -84,7 +77,6 @@
         .magic-btn:hover { color: #fff; border-color: #bf00ff; box-shadow: 0 0 20px rgba(191, 0, 255, 0.4); transform: translateY(-2px); }
         .back-btn { border: 1px solid #d4af37 !important; color: #d4af37 !important; font-weight: bold; }
 
-        /* ЗОНА ЧАТА */
         #chat-area { 
             flex-grow: 1; display: flex; flex-direction: column; position: relative; 
             overflow: hidden; background-image: url('assets/img/fon.jpg.jpg');
@@ -172,7 +164,7 @@
     </div>
 
     <div id="side-panel">
-        <div class="rune-glow" id="selena-trigger" title="Селена">ᛟ</div>
+        <div class="rune-glow" id="selena-trigger">ᛟ</div>
         <div class="avatar-circle" id="dynamic-avatar">?</div>
         <div id="display-nick">МАГ</div>
         <div id="lvl-display" style="color:#8a7fb9; font-size:12px; letter-spacing:3px;">LEVEL 0</div>
@@ -219,7 +211,7 @@
     const ably = new Ably.Realtime({ key: 'FO1MkA.QBgrTg:OjC-PQMR4Coi4nxjLyFe84T8uKnxzl0lFkFfDPyfDYg', clientId: myName });
     const channel = ably.channels.get('arcanum_stream');
 
-    // === СИСТЕМА СЕЛЕНА (ГОЛОСОВЫЕ КОМАНДЫ И ЗНАКИ) ===
+    // === ЛОГИКА СЕЛЕНЫ (ГОЛОСОВЫЕ КОМАНДЫ) ===
     let recognition;
     let isSelenaActive = false;
 
@@ -234,13 +226,13 @@
             let result = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
             console.log("Селена слышит: " + result);
 
-            // 1. КОМАНДЫ
+            // КОМАНДЫ
             if (result === "замри") { toggleSelena(); return; }
             if (result === "развей") { document.getElementById('user-msg').value = ''; return; }
             if (result.includes("селена") && result.includes("отправь")) { send(); return; }
             if (result.includes("селена") && result.includes("в тень")) { toggleShadow(); return; }
 
-            // 2. ГОЛОСОВЫЕ ТОЧКИ / ЗНАКИ
+            // ГОЛОСОВЫЕ ЗНАКИ
             result = result
                 .replace(/\bточка\b/g, '.')
                 .replace(/\bзапятая\b/g, ',')
@@ -249,21 +241,25 @@
                 .replace(/\bтри точки\b/g, '...')
                 .replace(/\bсмайлик\b/g, ':)');
 
-            // 3. ВВОД
             const inp = document.getElementById('user-msg');
             inp.value = inp.value + (inp.value ? " " : "") + result;
+        };
+
+        // Чтобы не выключался сам по себе при тишине
+        recognition.onend = () => {
+            if (isSelenaActive) recognition.start();
         };
     }
 
     function toggleSelena() {
         const btn = document.getElementById('selena-trigger');
         if (!isSelenaActive) {
-            recognition.start();
             isSelenaActive = true;
+            recognition.start();
             btn.classList.add('selena-active');
         } else {
-            recognition.stop();
             isSelenaActive = false;
+            recognition.stop();
             btn.classList.remove('selena-active');
         }
     }
