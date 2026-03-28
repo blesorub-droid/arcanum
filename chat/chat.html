@@ -66,7 +66,7 @@
     </div>
 
     <div id="side-panel">
-        <div class="rune-glow" id="selena-trigger" title="Голос Селены">ᛟ</div>
+        <div class="rune-glow" id="selena-trigger" title="Голос Ники">ᛟ</div>
         <div class="avatar-circle" id="dynamic-avatar">?</div>
         <div id="display-nick">МАГ</div>
         <div id="lvl-display" style="color:#8a7fb9; font-size:12px; letter-spacing:3px;">LEVEL 0</div>
@@ -195,7 +195,7 @@
             setTimeout(() => rune.remove(), 8000);
         }, 2000);
 
-        // === СЕЛЕНА LOGIC v14.2 (FIXED) ===
+        // === НИКА LOGIC v14.3 (STABLE VOICE) ===
         let recognition = null;
         window.isStopManual = false;
         window.isPaused = false;
@@ -225,12 +225,12 @@
                 let text = event.results[event.resultIndex][0].transcript.trim();
                 let low = text.toLowerCase();
 
-                // 1. КОМАНДА ВЫХОДА (СТОП/ЗАМРИ)
+                // 1. СТОП / ЗАМРИ (Принудительно тушим)
                 if (low.includes("стоп") || low.includes("замри")) { 
                     window.isStopManual = true; 
                     trigger.classList.remove('selena-active');
                     document.body.style.cursor = "default";
-                    recognition.stop(); 
+                    recognition.abort(); 
                     return; 
                 }
 
@@ -238,14 +238,15 @@
                 if (low.includes("пауза")) { window.isPaused = true; return; }
                 if (low.includes("работай")) { window.isPaused = false; return; }
 
-                // 3. ОТПРАВКА (СЕЛЕНА + ОТПРАВЬ/ИЗРЕКИ)
-                if (low.includes("селена") && (low.includes("отправ") || low.includes("изречь"))) {
-                    window.send(); return; 
-                }
+                // 3. СТИРАЙ ВСЁ (Приоритет)
+                if (low.includes("стирай")) { element.value = ''; return; }
 
-                // 4. СТИРАНИЕ (СТИРАЙ ВСЕ)
-                if (low.includes("стирай всё") || low.includes("стирай все")) { 
-                    element.value = ''; return; 
+                // 4. КОМАНДА НИКА (ОТПРАВИТЬ)
+                const callNika = low.includes("ника") || low.includes("нику") || low.includes("мика") || low.includes("вика");
+                const callSend = low.includes("отправ") || low.includes("изречь");
+
+                if (callNika && callSend) {
+                    window.send(); return; 
                 }
 
                 // 5. ТЕКСТ (если не пауза)
@@ -253,7 +254,9 @@
                     if (low === "абзац") { element.value += "\n"; return; }
                     
                     const emojiMap = { "точка": ". ", "запятая": ", ", "восклик": "! ", "вопрос": "? ", "лайк": "👍 ", "смайл": "😊 " };
-                    let clean = text.replace(/селена/gi, '').trim();
+                    
+                    // Вырезаем имя из текста перед печатью
+                    let clean = text.replace(/ника|нику|мика|вика/gi, '').trim();
                     if (!clean && !emojiMap[low]) return;
 
                     let finalAdd = emojiMap[low] || (clean + " ");
@@ -263,7 +266,7 @@
 
             recognition.onend = () => { 
                 if (!window.isStopManual) {
-                    setTimeout(() => { try { recognition.start(); } catch(e) {} }, 100);
+                    setTimeout(() => { try { if(!window.isStopManual) recognition.start(); } catch(e) {} }, 100);
                 }
             };
             recognition.start();
