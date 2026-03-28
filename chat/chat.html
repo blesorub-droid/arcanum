@@ -6,6 +6,7 @@
     <title>ARCANUM — Чат Душ & Связь</title>
     <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
     <style>
+        /* ТВОРЧЕСКИЙ СТИЛЬ ЖЕНИ */
         * { box-sizing: border-box; }
         #log::-webkit-scrollbar { width: 8px; }
         #log::-webkit-scrollbar-track { background: transparent; }
@@ -66,11 +67,11 @@
     </div>
 
     <div id="side-panel">
-        <div class="rune-glow" id="selena-trigger" title="Голос">ᛟ</div>
+        <div class="rune-glow" id="selena-trigger" title="Голосовое управление">ᛟ</div>
         <div class="avatar-circle" id="dynamic-avatar">?</div>
         <div id="display-nick">МАГ</div>
         <div id="lvl-display" style="color:#8a7fb9; font-size:12px; letter-spacing:3px;">LEVEL 0</div>
-        <input type="text" id="change-nick" placeholder="Имя..." style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:10px; font-size:12px; text-align:center; margin-top:10px; border-radius:10px;" onchange="saveNewNick(this.value)">
+        <input type="text" id="change-nick" placeholder="Изменить имя..." style="background:#000; border:1px solid #2a1a3a; color:#d4af37; width:100%; padding:10px; font-size:12px; text-align:center; margin-top:10px; border-radius:10px;" onchange="saveNewNick(this.value)">
         <button id="shadow-btn" class="magic-btn" onclick="toggleShadow()" style="margin-top:10px; border-color:#d4af37; color:#d4af37;">ОБЛЕЧЬ В ТЕНЬ</button>
         <button class="magic-btn" onclick="document.getElementById('log').innerHTML=''" style="margin-top:10px; color:#ff4d4d; border-color:#ff4d4d33;">ОЧИСТИТЬ</button>
         <button class="magic-btn back-btn" onclick="location.href='../index.html'" style="margin-top:auto;">ВЫЙТИ</button>
@@ -195,7 +196,7 @@
             setTimeout(() => rune.remove(), 8000);
         }, 2000);
 
-        // === ЛОГИКА ГОЛОСА v14.4 (ПРЯМЫЕ КОМАНДЫ) ===
+        // === ГОЛОСОВАЯ ЛОГИКА v14.5 (С ИСПРАВЛЕННЫМ ВОСКЛИКОМ) ===
         let recognition = null;
         window.isStopManual = false;
         window.isPaused = false;
@@ -224,12 +225,8 @@
                 let text = event.results[0][0].transcript.trim();
                 let low = text.toLowerCase();
 
-                // КОМАНДА ОТПРАВИТЬ
-                if (low === "отправь" || low === "изречь") {
-                    window.send(); return; 
-                }
-
-                // СТОП
+                // 1. ПРИОРИТЕТНЫЕ КОМАНДЫ
+                if (low === "отправь" || low === "изречь") { window.send(); return; }
                 if (low === "стоп" || low === "замри") { 
                     window.isStopManual = true; 
                     trigger.classList.remove('selena-active');
@@ -237,17 +234,32 @@
                     recognition.abort(); 
                     return; 
                 }
-
-                // ПАУЗА / РАБОТАЙ / СТИРАЙ
+                if (low === "стирай") { element.value = ''; return; }
                 if (low === "пауза") { window.isPaused = true; return; }
                 if (low === "работай") { window.isPaused = false; return; }
-                if (low === "стирай") { element.value = ''; return; }
 
-                // ЗАПИСЬ
+                // 2. ОБРАБОТКА ТЕКСТА И СИМВОЛОВ
                 if (!window.isPaused) {
                     if (low === "абзац") { element.value += "\n"; return; }
-                    const emojiMap = { "точка": ". ", "запятая": ", ", "восклик": "! ", "вопрос": "? " };
-                    element.value += emojiMap[low] || (text + " ");
+                    
+                    const magicMap = { 
+                        "точка": ". ", 
+                        "запятая": ", ", 
+                        "восклик": "! ", 
+                        "восклицательный": "! ",
+                        "знак": "! ", // Запасной вариант для "знак восклицания"
+                        "вопрос": "? ", 
+                        "лайк": "👍 ", 
+                        "смайл": "😊 ", 
+                        "огонь": "🔥 " 
+                    };
+
+                    if (magicMap[low]) {
+                        element.value += magicMap[low];
+                    } else {
+                        let formattedText = (element.value === '') ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+                        element.value += formattedText + " ";
+                    }
                 }
             };
 
