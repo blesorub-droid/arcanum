@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Клодовая ИИ — Финал v3.8</title>
+    <title>Клодовая ИИ — Рюкзак v3.9</title>
     <style>
         :root {
             --neon: #00f2ff;
@@ -63,7 +63,6 @@
         .module-card h3 { margin: 0; color: var(--accent); font-size: 0.85em; }
         .module-card p { margin: 2px 0 0 0; color: #555; font-size: 0.65em; }
 
-        /* Окно инструмента */
         .tool-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -104,15 +103,16 @@
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 15px;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
         }
 
-        .control-group { display: flex; align-items: center; gap: 10px; font-size: 0.8em; color: #ccc; }
+        .control-group { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; font-size: 0.7em; color: #ccc; }
         
         input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; background: none; }
+        input[type="text"] { background: #111; border: 1px solid #333; color: #fff; padding: 5px; border-radius: 4px; }
 
         canvas { width: 100%; border-radius: 4px; display: none; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
@@ -133,7 +133,7 @@
     <div class="hub-grid">
         <div class="module-card" onclick="openTool('cover-tool')">
             <h3>ОБЛОЖКИ 16:9</h3>
-            <p>Яркий размытый фон и рамка</p>
+            <p>Тени, Блюр и Текст</p>
         </div>
         <div class="module-card" onclick="location.href='ai.html'">
             <h3>РАЗУМ (AI)</h3>
@@ -145,7 +145,7 @@
     <div id="cover-tool" class="tool-overlay">
         <div class="tool-content">
             <span class="close-btn" onclick="closeTool('cover-tool')">&times;</span>
-            <h2 style="color: var(--accent); font-size: 1.1em; margin-bottom: 10px;">МАСТЕР ОБЛОЖЕК</h2>
+            <h2 style="color: var(--accent); font-size: 1.1em; margin-bottom: 10px;">МАСТЕР ОБЛОЖЕК v3.9</h2>
             
             <div id="drop-zone" onclick="document.getElementById('file-input').click()">
                 КЛИКНИ ИЛИ ПЕРЕТАЩИ КАРТИНКУ
@@ -154,12 +154,24 @@
 
             <div id="controls" class="controls-panel">
                 <div class="control-group">
-                    <label>ЦВЕТ РАМКИ:</label>
+                    <label>ЦВЕТ РАМКИ</label>
                     <input type="color" id="border-color" value="#ff8c00">
                 </div>
                 <div class="control-group">
-                    <label>ПРОЗРАЧНОСТЬ:</label>
+                    <label>ПРОЗРАЧНОСТЬ</label>
                     <input type="range" id="border-opacity" min="0" max="1" step="0.05" value="0.9">
+                </div>
+                <div class="control-group">
+                    <label>РАЗМЫТИЕ ФОНА</label>
+                    <input type="range" id="blur-value" min="0" max="100" step="1" value="40">
+                </div>
+                <div class="control-group">
+                    <label>СИЛА ТЕНИ</label>
+                    <input type="range" id="shadow-intensity" min="0" max="100" step="5" value="50">
+                </div>
+                <div class="control-group">
+                    <label>ТЕКСТ (REMIX)</label>
+                    <input type="text" id="cover-text" placeholder="Введите название...">
                 </div>
             </div>
             
@@ -169,13 +181,8 @@
     </div>
 
 <script>
-    // Функции открытия/закрытия
-    function openTool(id) {
-        document.getElementById(id).style.display = 'flex';
-    }
-    function closeTool(id) {
-        document.getElementById(id).style.display = 'none';
-    }
+    function openTool(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeTool(id) { document.getElementById(id).style.display = 'none'; }
 
     const fileInput = document.getElementById('file-input');
     const dropZone = document.getElementById('drop-zone');
@@ -183,8 +190,13 @@
     const ctx = canvas.getContext('2d');
     const downloadBtn = document.getElementById('download-btn');
     const controls = document.getElementById('controls');
+    
+    // Inputs
     const borderColorInput = document.getElementById('border-color');
     const borderOpacityInput = document.getElementById('border-opacity');
+    const blurInput = document.getElementById('blur-value');
+    const shadowInput = document.getElementById('shadow-intensity');
+    const textInput = document.getElementById('cover-text');
 
     let currentImg = null;
 
@@ -192,8 +204,10 @@
     dropZone.ondragover = (e) => { e.preventDefault(); };
     dropZone.ondrop = (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); };
 
-    borderColorInput.oninput = () => { if(currentImg) draw(currentImg); };
-    borderOpacityInput.oninput = () => { if(currentImg) draw(currentImg); };
+    // Слушатели изменений
+    [borderColorInput, borderOpacityInput, blurInput, shadowInput, textInput].forEach(el => {
+        el.oninput = () => { if(currentImg) draw(currentImg); };
+    });
 
     function handleFile(file) {
         if(!file) return;
@@ -236,10 +250,9 @@
         const sourceX = (img.width - sourceSize) / 2;
         const sourceY = (img.height - sourceSize) / 2;
 
-        // 1. ЧИСТОЕ РАЗМЫТИЕ (БЕЗ ЗАТЕМНЕНИЯ КРАЕВ)
+        // 1. Динамическое размытие
         ctx.save();
-        ctx.filter = 'blur(40px)'; 
-        // Рисуем картинку чуть больше холста, чтобы убрать белые края от блюра
+        ctx.filter = `blur(${blurInput.value}px)`; 
         ctx.drawImage(img, sourceX, sourceY, sourceSize, sourceSize, -100, -100, 2120, 1280);
         ctx.restore();
 
@@ -248,11 +261,11 @@
         const x = (1920 - boxSize) / 2;
         const y = margin;
 
-        // 2. Рамка
+        // 2. Рамка с настраиваемой тенью
         ctx.save();
-        ctx.shadowColor = 'rgba(0,0,0,0.6)';
-        ctx.shadowBlur = 50;
-        ctx.shadowOffsetY = 20;
+        ctx.shadowColor = 'rgba(0,0,0,0.8)';
+        ctx.shadowBlur = shadowInput.value;
+        ctx.shadowOffsetY = shadowInput.value / 2;
         ctx.beginPath();
         ctx.roundRect(x, y, boxSize, boxSize, 65); 
         ctx.lineWidth = 14;
@@ -269,10 +282,22 @@
         ctx.drawImage(img, x + (boxSize - img.width * s) / 2, y + (boxSize - img.height * s) / 2, img.width * s, img.height * s);
         ctx.restore();
 
+        // 4. Текст (если введен)
+        if (textInput.value) {
+            ctx.save();
+            ctx.font = "bold 80px sans-serif";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.shadowColor = "black";
+            ctx.shadowBlur = 15;
+            ctx.fillText(textInput.value.toUpperCase(), 1920 / 2, 1000);
+            ctx.restore();
+        }
+
         downloadBtn.style.display = 'inline-block';
         downloadBtn.onclick = () => {
             const link = document.createElement('a');
-            link.download = `zhekoss_cover.png`;
+            link.download = `zhekoss_cover_upd.png`;
             link.href = canvas.toDataURL('image/png', 1.0);
             link.click();
         };
